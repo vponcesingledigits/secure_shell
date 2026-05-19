@@ -1,0 +1,22 @@
+Port Map shell module integration notes
+
+Router:
+- apps.port_map.router.router uses prefix /apps/port-map
+- Static files must be mounted at /apps/port-map/static
+- apps.port_map.mount.mount(app) handles both
+
+Shared library expectations:
+- shared.ssh.run_commands(host, username, password, commands) -> dict[command, output]
+- shared.vendors.detect_vendor(version=..., host=...) -> vendor string
+
+Vendor MAC commands:
+- ProCurve: show mac-add <port>
+- CXOS: sh mac-address-table interface <port>
+- Ruckus: sh mac-add ether <port>
+- Cisco: show mac address dynamic interface <port>
+
+Vendor rename commands:
+- ProCurve: config / port <port> name <name> / end / write memory
+- Ruckus: config t / interface eth <port> / port-name <name> / end / write mem
+- Aruba CXOS: configure terminal / interface <port> / description <name> / end / write memory
+- Cisco: configure terminal / interface <port> / description <name> / end / write memory

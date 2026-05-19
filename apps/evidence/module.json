@@ -1,0 +1,10 @@
+{
+  "id": "evidence",
+  "name": "Evidence Pack",
+  "version": "Alpha 0.6 consolidated",
+  "mount": "/apps/evidence",
+  "category": "Support Diagnostics",
+  "description": "Create portable evidence ZIPs and redacted reports.",
+  "router": "apps.evidence.routes",
+  "enabled": true
+}

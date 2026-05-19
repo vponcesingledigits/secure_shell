@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">One pane of glass</p>
+    <h1>Single Digits Engineering Platform</h1>
+    <p class="lead">A unified shell for configuration generation, brand policy validation, support diagnostics, topology discovery, and exportable reporting.</p>
+    <div class="actions">
+      <a class="button primary" href="/site-context">Set Site Context</a>
+      <a class="button" href="/configuration">Open Configuration Builder</a>
+      <a class="button" href="/diagnostics">Open Support Diagnostics</a>
+    </div>
+  </div>
+  <div class="hero-card">
+    <h3>Alpha 0.7.6 Shell</h3>
+    <ul>
+      <li>Runs on port 8010</li>
+      <li>Shared CSS/logo/favicon</li>
+      <li>Lazy migration structure</li>
+      <li>Reusable shared libraries</li>
+      <li>Legacy code preserved under modules/legacy</li>
+    </ul>
+  </div>
+</section>
+
+<div class="grid two">
+  <section class="panel">
+    <h2>Configuration Builder</h2>
+    <p>Holistic site configuration, documentation, VLAN/port/firewall/Nomadix/switch logic, and policy validation.</p>
+    <div class="module-list">
+      {% for module in config_modules %}
+      <a class="module-row" href="{{ module.route }}"><span>{{ module.name }}</span><small class="status {{ module.status }}">{{ module.status }}</small></a>
+      {% endfor %}
+    </div>
+  </section>
+  <section class="panel">
+    <h2>Support Diagnostics</h2>
+    <p>Modular troubleshooting tools, switch health, port mapping, LLDP renaming, traffic investigation, topology, and reports.</p>
+    <div class="module-list">
+      {% for module in diagnostic_modules %}
+      <a class="module-row" href="{{ module.route }}"><span>{{ module.name }}</span><small class="status {{ module.status }}">{{ module.status }}</small></a>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}

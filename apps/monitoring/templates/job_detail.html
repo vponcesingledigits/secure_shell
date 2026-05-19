@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+{% if error %}<section class="panel critical"><h1>{{ error }}</h1><p><a class="button" href="/apps/monitoring">Back</a></p></section>{% else %}
+<section class="hero"><p class="eyebrow">Monitoring Saved Run</p><h1>Run {{ run.run_id }}</h1><p class="lead">{{ run.type }} · {{ run.created_at }}</p><div class="actions"><a class="button" href="/apps/monitoring/export/{{ run.run_id }}.json">Export JSON</a><a class="button" href="/apps/monitoring">Back to Monitoring</a></div></section>
+<section class="panel"><h2>Summary</h2><table><tr><th>Status</th><td>{{ run.result.status }}</td></tr><tr><th>Confidence</th><td>{{ run.result.confidence }}</td></tr><tr><th>Parent</th><td>{{ run.result.parent_ip }} · {{ run.result.parent_vendor }}</td></tr><tr><th>Identified Port</th><td>{{ run.result.identified_port or '-' }}</td></tr><tr><th>LLDP</th><td>{{ run.result.lldp_neighbor_name or '-' }} / {{ run.result.lldp_management_ip or '-' }}</td></tr></table></section>
+<section class="panel"><h2>Evidence</h2><pre>{{ run.result.raw_output }}</pre></section>
+{% endif %}
+{% endblock %}

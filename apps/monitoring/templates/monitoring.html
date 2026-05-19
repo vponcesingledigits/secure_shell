@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">Support Diagnostics</p>
+  <h1>Monitoring Tool</h1>
+  <p class="lead">Shell-integrated monitoring workflows, down-device investigation, saved evidence, and reusable SSH/parser collection.</p>
+  <div class="actions">
+    <a class="button primary" href="/apps/monitoring/down-device">Open Down Device Troubleshooter</a>
+    <a class="button" href="/apps/monitoring/health-summary">Health Summary</a>
+    <a class="button" href="/apps/monitoring/session-log">Session Log</a>
+  </div>
+</section>
+
+<div class="grid two">
+  <section class="panel">
+    <h2>Available workflows</h2>
+    <div class="module-list">
+      <a class="module-row" href="/apps/monitoring/down-device"><span>Down Device Troubleshooter</span><small class="status active">active</small></a>
+      <a class="module-row" href="/apps/monitoring/health-summary"><span>Health Summary</span><small class="status active">active</small></a>
+      <a class="module-row" href="/apps/monitoring/session-log"><span>Session Log</span><small class="status active">active</small></a>
+    </div>
+  </section>
+  <section class="panel">
+    <h2>Recent events</h2>
+    {% if events %}<ul>{% for e in events %}<li><strong>{{ e.when }}</strong> — {{ e.message }}</li>{% endfor %}</ul>{% else %}<p class="muted">No monitoring events yet.</p>{% endif %}
+  </section>
+</div>
+
+<section class="panel">
+  <h2>Recent saved runs</h2>
+  {% if recent_runs %}
+  <table><tr><th>Run</th><th>Created</th><th>Type</th><th>Status</th><th>Parent</th><th>Port</th><th>Export</th></tr>
+    {% for run in recent_runs %}<tr>
+      <td><a href="/apps/monitoring/runs/{{ run.run_id }}">{{ run.run_id }}</a></td>
+      <td>{{ run.created_at }}</td><td>{{ run.type }}</td>
+      <td>{{ run.result.status }}</td><td>{{ run.result.parent_ip }}</td><td>{{ run.result.identified_port or '-' }}</td>
+      <td><a href="/apps/monitoring/export/{{ run.run_id }}.json">JSON</a></td>
+    </tr>{% endfor %}
+  </table>
+  {% else %}<p class="muted">No saved runs yet.</p>{% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,10 @@
+{
+  "id": "mac-trace",
+  "name": "MAC Trace Tool",
+  "version": "Alpha 0.6 consolidated",
+  "mount": "/apps/mac-trace",
+  "category": "Support Diagnostics",
+  "description": "Trace MAC addresses hop-by-hop through LLDP-connected switches.",
+  "router": "apps.mac_trace.routes",
+  "enabled": true
+}

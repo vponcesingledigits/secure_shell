@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section-heading">
+  <p class="eyebrow">Platform section</p>
+  <h1>{{ section_title }}</h1>
+  <p class="lead">{{ section_description }}</p>
+</section>
+<div class="grid cards">
+  {% for module in modules %}
+  <a class="card" href="{{ module.route }}">
+    <div class="card-top"><h2>{{ module.name }}</h2><span class="status {{ module.status }}">{{ module.status }}</span></div>
+    <p>{{ module.description }}</p>
+    {% if module.legacy_source %}<small>Legacy source: {{ module.legacy_source }}</small>{% endif %}
+  </a>
+  {% endfor %}
+</div>
+{% endblock %}

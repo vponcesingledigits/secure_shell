@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero compact-hero">
+  <div>
+    <p class="eyebrow">Shell-wide defaults</p>
+    <h1>Site Context</h1>
+    <p class="lead">Enter site information once. Configuration Builder modules can reuse this data for switch, gateway, firewall, documentation, and evidence exports.</p>
+    {% if saved %}<p class="notice success">Site context saved.</p>{% endif %}
+  </div>
+  <div class="hero-card">
+    <h3>Default switch addressing</h3>
+    <ul>
+      <li>First switch: {{ profile.default_switch_ip_start }}</li>
+      <li>Mask: {{ profile.default_switch_mask }}</li>
+      <li>Gateway: {{ profile.default_switch_gateway }}</li>
+      <li>Mgmt VLAN: {{ profile.default_mgmt_vlan }}</li>
+    </ul>
+  </div>
+</section>
+
+<form method="post" class="panel form-grid-page">
+  <h2>Property / Site Information</h2>
+  <div class="form-grid three">
+    <label>Site Name<input name="site_name" value="{{ profile.site_name }}"></label>
+    <label>Site Code<input name="site_code" value="{{ profile.site_code }}"></label>
+    <label>Brand<select name="brand">
+      {% for brand in ["Generic / NonBranded", "Marriott", "Hyatt", "Sonesta"] %}<option value="{{ brand }}" {% if profile.brand == brand %}selected{% endif %}>{{ brand }}</option>{% endfor %}
+    </select></label>
+    <label>Deployment Model<input name="deployment_model" value="{{ profile.deployment_model }}"></label>
+    <label>MARSHA Code<input name="marsha_code" value="{{ profile.marsha_code }}"></label>
+    <label>Hyatt Code<input name="hyatt_code" value="{{ profile.hyatt_code }}"></label>
+  </div>
+
+  <h2>Address / Contact</h2>
+  <div class="form-grid three">
+    <label>Address 1<input name="address_1" value="{{ profile.address_1 }}"></label>
+    <label>Address 2<input name="address_2" value="{{ profile.address_2 }}"></label>
+    <label>City<input name="city" value="{{ profile.city }}"></label>
+    <label>State<input name="state" value="{{ profile.state }}"></label>
+    <label>Postal Code<input name="postal_code" value="{{ profile.postal_code }}"></label>
+    <label>Country<input name="country" value="{{ profile.country }}"></label>
+    <label>Property Contact<input name="property_contact" value="{{ profile.property_contact }}"></label>
+    <label>Property Phone<input name="property_phone" value="{{ profile.property_phone }}"></label>
+  </div>
+
+  <h2>Reusable Network Defaults</h2>
+  <div class="form-grid five">
+    <label>First Switch IP<input name="default_switch_ip_start" value="{{ profile.default_switch_ip_start }}"></label>
+    <label>Switch Mask<input name="default_switch_mask" value="{{ profile.default_switch_mask }}"></label>
+    <label>Switch Gateway<input name="default_switch_gateway" value="{{ profile.default_switch_gateway }}"></label>
+    <label>Mgmt VLAN<input name="default_mgmt_vlan" value="{{ profile.default_mgmt_vlan }}"></label>
+    <label>AP Mgmt VLAN<input name="default_ap_mgmt_vlan" value="{{ profile.default_ap_mgmt_vlan }}"></label>
+  </div>
+
+  <label>Notes<textarea name="notes" rows="4">{{ profile.notes }}</textarea></label>
+  <div class="actions"><button class="button primary" type="submit">Save Site Context</button><a class="button" href="/apps/switch-configurator">Open Switch Configurator</a></div>
+</form>
+{% endblock %}

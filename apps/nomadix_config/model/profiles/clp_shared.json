@@ -1,0 +1,62 @@
+{
+  "internal_web_server": {
+    "ssl_support": false,
+    "encrypt_only_sensitive_data": true,
+    "certificate_dns_name": "secure.opennetworkexchange.net",
+    "portal_page_url": "https://portal.one.singledigits.com/captive-portal",
+    "parameter_passing": true,
+    "parameter_signing_method": "none",
+    "signed_parameters": {
+      "UI": true,
+      "MA": true,
+      "RN": true,
+      "PORT": true,
+      "SIP": true,
+      "QINQ": true
+    },
+    "manual_passthrough_address": false,
+    "supports_gis_clients": false,
+    "block_iws_login_page": false,
+    "portal_xml_post_url": "",
+    "portal_xml_post_port": "0",
+    "usernames": true,
+    "new_subscribers": true,
+    "paypal": false,
+    "smart_client_support": true
+  },
+  "xml_options": {
+    "logout_ip": "198.51.100.10",
+    "auth_via_xml_user_credentials": false,
+    "auth_via_ip_address": true,
+    "xml_servers": [
+      "44.217.205.81",
+      "3.233.97.90",
+      "18.210.203.227",
+      "52.204.25.115"
+    ],
+    "https_redirection": true
+  },
+  "radius_service_profile": {
+    "profName": "SD-RADSEC",
+    "authProtocol": "0",
+    "authOn": "true",
+    "authPrimUri": "radproxy.one.singledigits.com",
+    "authPrimPort": "0",
+    "authPrimRadSecPort": "2083",
+    "authAltUri": "",
+    "authAltPort": "0",
+    "authAltRadSecPort": "0",
+    "acctOn": "true",
+    "acctPrimUri": "radproxy.one.singledigits.com",
+    "acctPrimPort": "0",
+    "acctPrimRadSecPort": "2083",
+    "acctAltUri": "",
+    "acctAltPort": "0",
+    "acctAltRadSecPort": "0",
+    "retryMethod": "0",
+    "retryDelay": "10",
+    "retryAttempts": "2",
+    "radSecOn": "true",
+    "secrets": "certificate_upload_required"
+  }
+}

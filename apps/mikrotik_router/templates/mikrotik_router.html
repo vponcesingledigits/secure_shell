@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section-heading">
+  <p class="eyebrow">Configuration Builder</p>
+  <h1>MikroTik Router Builder</h1>
+  <p class="lead">Generate RouterOS v7 public circuit router configs with WAN/LAN bridges, addressing, SDACL, locked-down services, optional SNMP, and sanitized export support.</p>
+</section>
+
+<div class="notice"><strong>Generate-only:</strong> this module does not SSH, API push, or modify routers. Review generated RouterOS config before paste/import.</div>
+
+<form method="post" class="builder-form">
+  <div class="grid two">
+    <section class="panel">
+      <h2>Site / Router</h2>
+      <label>Site Name<input name="site_name" value="{{ values.site_name }}" placeholder="Property or project name"></label>
+      <label>Router Identity<input name="router_identity" value="{{ values.router_identity }}" placeholder="MARSHA-RTR01 or site-router"></label>
+      <label>Notes<textarea name="notes" rows="3" placeholder="Optional implementation notes">{{ values.notes }}</textarea></label>
+    </section>
+
+    <section class="panel">
+      <h2>WAN</h2>
+      <label>WAN Interface<input name="wan_interface" value="{{ values.wan_interface }}"></label>
+      <label>WAN Mode
+        <select name="wan_mode">
+          <option value="dhcp" {% if values.wan_mode == 'dhcp' %}selected{% endif %}>DHCP</option>
+          <option value="static" {% if values.wan_mode == 'static' %}selected{% endif %}>Static</option>
+        </select>
+      </label>
+      <label>WAN IP/CIDR<input name="wan_ip_cidr" value="{{ values.wan_ip_cidr }}" placeholder="203.0.113.10/30"></label>
+      <label>WAN Gateway<input name="wan_gateway" value="{{ values.wan_gateway }}" placeholder="203.0.113.9"></label>
+    </section>
+  </div>
+
+  <div class="grid two">
+    <section class="panel">
+      <h2>LAN Bridge</h2>
+      <label>Bridge Name<input name="lan_bridge" value="{{ values.lan_bridge }}"></label>
+      <label>LAN Interfaces<textarea name="lan_interfaces" rows="3" placeholder="ether2, ether3, ether4, ether5">{{ values.lan_interfaces }}</textarea></label>
+      <label>LAN Gateway IP/CIDR<input name="lan_ip_cidr" value="{{ values.lan_ip_cidr }}"></label>
+      <label>DNS Servers<input name="dns_servers" value="{{ values.dns_servers }}"></label>
+    </section>
+
+    <section class="panel">
+      <h2>ACLs / Services</h2>
+      <label>SDACL Networks<textarea name="sdacl_networks" rows="4" placeholder="10.0.0.0/8&#10;172.16.0.0/12">{{ values.sdacl_networks }}</textarea></label>
+      <label>Admin Allow Networks<textarea name="admin_allow_networks" rows="4" placeholder="Approved admin source networks only">{{ values.admin_allow_networks }}</textarea></label>
+    </section>
+  </div>
+
+  <div class="grid two">
+    <section class="panel">
+      <h2>Optional DHCP Server</h2>
+      <label class="check"><input type="checkbox" name="enable_dhcp_server" {% if values.enable_dhcp_server %}checked{% endif %}> Enable LAN DHCP server</label>
+      <label>Pool Start<input name="dhcp_pool_start" value="{{ values.dhcp_pool_start }}" placeholder="192.168.88.100"></label>
+      <label>Pool End<input name="dhcp_pool_end" value="{{ values.dhcp_pool_end }}" placeholder="192.168.88.200"></label>
+      <label>Lease Time<input name="dhcp_lease_time" value="{{ values.dhcp_lease_time }}"></label>
+    </section>
+
+    <section class="panel">
+      <h2>Optional SNMP</h2>
+      <label class="check"><input type="checkbox" name="enable_snmp" {% if values.enable_snmp %}checked{% endif %}> Enable SNMP section</label>
+      <label>SNMP Community<input name="snmp_community" value="{{ values.snmp_community }}" placeholder="No default secret"></label>
+      <label>SNMP Location<input name="snmp_location" value="{{ values.snmp_location }}"></label>
+      <label>SNMP Contact<input name="snmp_contact" value="{{ values.snmp_contact }}"></label>
+    </section>
+  </div>
+
+  <div class="actions">
+    <button class="button primary" type="submit">Generate RouterOS Config</button>
+    {% if generated %}
+      <button class="button" type="submit" formaction="/apps/mikrotik-router/export">Download Full .rsc</button>
+      <button class="button" type="submit" formaction="/apps/mikrotik-router/export" name="sanitize_export" value="1">Download Sanitized .rsc</button>
+    {% endif %}
+    <a class="button" href="/configuration">Back to Configuration Builder</a>
+  </div>
+</form>
+
+{% if generated %}
+<section class="panel output-panel">
+  <div class="card-top"><h2>Generated RouterOS v7 Config</h2><span class="status active">generated</span></div>
+  <textarea class="config-output" readonly>{{ config_text }}</textarea>
+</section>
+<section class="panel output-panel">
+  <div class="card-top"><h2>Sanitized Export Preview</h2><span class="status shell">redacted</span></div>
+  <textarea class="config-output" readonly>{{ sanitized_text }}</textarea>
+</section>
+{% endif %}
+{% endblock %}

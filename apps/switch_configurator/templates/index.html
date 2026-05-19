@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Switch Configurator</title>
+  <link rel="icon" type="image/x-icon" href="{{ favicon_url }}">
+  <link rel="stylesheet" href="{{ module_base }}/static/switch_configurator.css">
+</head>
+<body>
+<div class="sd-shell-page">
+  <div class="sd-hero">
+    <div class="sd-title">
+      <img class="sd-logo" src="{{ logo_url }}" alt="Single Digits">
+      <div>
+        <h1>Switch Configurator</h1>
+        <p>Alpha 0.7 shell module · simple config flow · shared site context ready</p>
+      </div>
+    </div>
+    <div class="sd-actions">
+      <a class="sd-btn ghost" href="/">Shell Home</a>
+      <button class="sd-btn" type="button" onclick="copyPreview()">Copy Preview</button>
+    </div>
+  </div>
+
+  <form method="post" action="{{ module_base }}/">
+    <div class="sd-layout">
+      <div>
+        <div class="sd-card">
+          <h2>Site Information</h2>
+          <p class="hint">This section is intended to become the shell-wide site context. Saving it writes to local shell storage so other modules can reuse the same site name, code, address, brand, and default addressing.</p>
+          <div class="sd-grid">
+            <div class="sd-field"><label>Site Name</label><input name="site_name" value="{{ base.property_name or (site_profile.site_name if site_profile else '') }}"></div>
+            <div class="sd-field"><label>Site Code / MARSHA</label><input name="site_code" value="{{ base.site_code or base.marsha_code or (site_profile.site_code if site_profile else '') }}"></div>
+            <div class="sd-field"><label>Property Name</label><input name="property_name" value="{{ base.property_name }}"></div>
+            <div class="sd-field"><label>MARSHA Code</label><input name="marsha_code" value="{{ base.marsha_code }}"></div>
+            <div class="sd-field"><label>Address 1</label><input name="address_1" value="{{ base.address_1 }}"></div>
+            <div class="sd-field"><label>Address 2</label><input name="address_2" value="{{ base.address_2 }}"></div>
+            <div class="sd-field"><label>City</label><input name="city" value="{{ base.city }}"></div>
+            <div class="sd-field"><label>State</label><input name="state" value="{{ base.state }}"></div>
+            <div class="sd-field"><label>Postal Code</label><input name="postal_code" value="{{ base.postal_code }}"></div>
+            <div class="sd-field"><label>Country</label><input name="country" value="{{ base.country }}"></div>
+            <div class="sd-field"><label>Contact</label><input name="property_contact" value="{{ base.property_contact }}"></div>
+            <div class="sd-field"><label>Phone</label><input name="property_phone" value="{{ base.property_phone }}"></div>
+          </div>
+          <div style="margin-top:12px" class="checkbox-line"><input type="checkbox" name="save_site_context" checked> Save as shell-wide site context</div>
+        </div>
+
+        <div class="sd-card">
+          <h2>Configuration Options</h2>
+          <div class="sd-grid three">
+            <div class="sd-field"><label>Vendor / Platform</label><select name="vendor">{% for o in vendor_options %}<option value="{{o}}" {% if base.vendor==o %}selected{% endif %}>{{o}}</option>{% endfor %}</select></div>
+            <div class="sd-field"><label>Brand Profile</label><select name="brand_profile" id="brand_profile" onchange="syncDeploymentModels()">{% for o in brand_options %}<option value="{{o}}" {% if base.brand_profile==o %}selected{% endif %}>{{o}}</option>{% endfor %}</select></div>
+            <div class="sd-field"><label>Deployment Model</label><select name="deployment_model" id="deployment_model">{% for o in deployment_mode_options[base.brand_profile] %}<option value="{{o}}" {% if base.deployment_model==o %}selected{% endif %}>{{o}}</option>{% endfor %}</select></div>
+            <div class="sd-field"><label>Hostname Override</label><input name="hostname" value="{{ base.hostname }}" placeholder="Auto: SITECODESW001-01-IDF1"></div>
+            <div class="sd-field"><label>Floor</label><input name="floor" value="{{ base.floor }}"></div>
+            <div class="sd-field"><label>Closet</label><input name="closet" value="{{ base.closet }}"></div>
+            <div class="sd-field"><label>Switch Mgmt VLAN</label><input name="switch_mgmt_vlan" value="{{ base.switch_mgmt_vlan }}"></div>
+            <div class="sd-field"><label>Switch IP</label><input name="switch_ip" value="{{ base.switch_ip }}"></div>
+            <div class="sd-field"><label>Switch Mask</label><input name="switch_mask" value="{{ base.switch_mask }}"></div>
+            <div class="sd-field"><label>Default Gateway</label><input name="switch_gateway" value="{{ base.switch_gateway }}"></div>
+            <div class="sd-field"><label>Voice VLAN</label><input name="voice_vlan" value="{{ base.voice_vlan }}"></div>
+            <div class="sd-field"><label>Number of Switches</label><select name="num_switches">{% for n in range(1,11) %}<option value="{{n}}" {% if base.num_switches==n|string %}selected{% endif %}>{{n}}</option>{% endfor %}</select></div>
+          </div>
+        </div>
+
+        <div class="sd-card">
+          <div class="tabs">
+            <button type="button" class="tab-btn active" data-tab="switches" onclick="showTab('switches')">Switches</button>
+            <button type="button" class="tab-btn" data-tab="vlans" onclick="showTab('vlans')">VLANs</button>
+            <button type="button" class="tab-btn" data-tab="profiles" onclick="showTab('profiles')">Profiles</button>
+            <button type="button" class="tab-btn" data-tab="ports" onclick="showTab('ports')">Ports</button>
+            <button type="button" class="tab-btn" data-tab="services" onclick="showTab('services')">Services</button>
+          </div>
+
+          <div id="tab-switches" class="tab-panel active">
+            <h2>Switch Members</h2>
+            {% for m in members %}{% set i=loop.index %}
+            <div class="member-card">
+              <strong>Switch {{ i }}</strong>
+              <div class="sd-grid three" style="margin-top:10px">
+                <div class="sd-field"><label>Port Count</label><select name="member_{{i}}_port_count">{% for o in port_count_options %}<option value="{{o}}" {% if m.port_count==o %}selected{% endif %}>{{o}}</option>{% endfor %}</select></div>
+                <div class="sd-field"><label>Role</label><select name="member_{{i}}_role">{% for o in switch_role_options %}<option value="{{o}}" {% if m.role==o %}selected{% endif %}>{{o}}</option>{% endfor %}</select></div>
+                <div class="sd-field"><label>Core Type</label><select name="member_{{i}}_core_type">{% for o in core_type_options %}<option value="{{o}}" {% if m.core_type==o %}selected{% endif %}>{{o}}</option>{% endfor %}</select></div>
+                <div class="sd-field"><label>Edge AP Default</label><select name="member_{{i}}_edge_ap_profile">{% for o in ap_profile_options %}<option value="{{o}}" {% if m.edge_ap_profile==o %}selected{% endif %}>{{o}}</option>{% endfor %}</select></div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+          <div id="tab-vlans" class="tab-panel">
+            <h2>VLANs</h2>
+            <input type="hidden" name="vlan_count" value="{{ vlans|length }}">
+            {% for v in vlans %}{% set i=loop.index0 %}
+            <div class="vlan-row">
+              <div class="sd-grid">
+                <div class="checkbox-line"><input type="checkbox" name="vlan_{{i}}_enabled" {% if v.enabled %}checked{% endif %}> Enabled</div>
+                <div class="sd-field"><label>VLAN ID</label><input name="vlan_{{i}}_id" value="{{v.vlan_id}}"></div>
+                <div class="sd-field"><label>Name</label><input name="vlan_{{i}}_name" value="{{v.name}}"></div>
+                <div class="sd-field"><label>Zone</label><select name="vlan_{{i}}_zone">{% for z in zone_options %}<option value="{{z}}" {% if v.zone==z %}selected{% endif %}>{{z}}</option>{% endfor %}</select></div>
+                <div class="sd-field"><label>Multicast</label><select name="vlan_{{i}}_multicast">{% for o in multicast_options %}<option value="{{o}}" {% if v.multicast==o %}selected{% endif %}>{{o}}</option>{% endfor %}</select></div>
+                <div class="sd-field"><label>Notes</label><input name="vlan_{{i}}_notes" value="{{v.notes}}"></div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+          <div id="tab-profiles" class="tab-panel">
+            <h2>Port Profiles</h2>
+            <input type="hidden" name="profile_count" value="{{ profiles|length }}">
+            {% for prof in profiles %}{% set i=loop.index0 %}
+            <div class="profile-row">
+              <div class="sd-grid three">
+                <div class="sd-field"><label>Name</label><input name="profile_{{i}}_name" value="{{prof.name}}"></div>
+                <div class="sd-field"><label>Untagged VLAN</label><input name="profile_{{i}}_untagged_vlan" value="{{prof.untagged_vlan}}"></div>
+                <div class="sd-field"><label>Tagged VLANs</label><input name="profile_{{i}}_tagged_vlans" value="{{ prof.tagged_vlans|join(',') }}"></div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+          <div id="tab-ports" class="tab-panel">
+            <h2>Ports</h2>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Interface</th><th>Profile</th><th>Description</th><th>Voice</th><th>Exempt Untagged</th><th>Exempt Tagged</th></tr></thead>
+                <tbody>
+                {% for p in ports %}{% set i=loop.index0 %}
+                  <tr>
+                    <td>{{p.interface}}</td>
+                    <td><select name="port_{{i}}_profile">{% for prof in profiles %}<option value="{{prof.name}}" {% if p.profile==prof.name %}selected{% endif %}>{{prof.name}}</option>{% endfor %}</select></td>
+                    <td><input name="port_{{i}}_description" value="{{p.description}}"></td>
+                    <td><input type="checkbox" name="port_{{i}}_voice_enabled" {% if p.voice_enabled %}checked{% endif %}></td>
+                    <td><input name="port_{{i}}_exempt_untagged" value="{{p.exempt_untagged}}"></td>
+                    <td><input name="port_{{i}}_exempt_tagged" value="{{p.exempt_tagged}}"></td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="tab-services" class="tab-panel">
+            <h2>AAA / Services</h2>
+            <div class="sd-grid three">
+              <div class="sd-field"><label>TACACS Server 1</label><input name="tacacs_server_1" value="{{base.tacacs_server_1}}"></div>
+              <div class="sd-field"><label>TACACS Server 2</label><input name="tacacs_server_2" value="{{base.tacacs_server_2}}"></div>
+              <div class="sd-field"><label>TACACS Secret</label><input name="tacacs_secret" value="{{base.tacacs_secret}}"></div>
+              <div class="sd-field"><label>RADIUS Server IP</label><input name="radius_server_ip" value="{{base.radius_server_ip}}"></div>
+              <div class="sd-field"><label>RADIUS Auth Port</label><input name="radius_auth_port" value="{{base.radius_auth_port}}"></div>
+              <div class="sd-field"><label>RADIUS Acct Port</label><input name="radius_acct_port" value="{{base.radius_acct_port}}"></div>
+              <div class="sd-field"><label>RADIUS Secret</label><input name="radius_secret" value="{{base.radius_secret}}"></div>
+              <div class="sd-field"><label>Aruba Mgmt VRF</label><input name="aruba_mgmt_vrf" value="{{base.aruba_mgmt_vrf}}"></div>
+              <div class="sd-field"><label>SSH Timeout</label><input name="ssh_timeout" value="{{base.ssh_timeout}}"></div>
+              <div class="checkbox-line"><input type="checkbox" name="auth_enable_aaa" {% if base.auth_enable_aaa=='yes' %}checked{% endif %}> Enable AAA</div>
+              <div class="checkbox-line"><input type="checkbox" name="dot1x_enabled" {% if base.dot1x_enabled=='yes' %}checked{% endif %}> Enable 802.1X</div>
+              <div class="checkbox-line"><input type="checkbox" name="mac_auth_enabled" {% if base.mac_auth_enabled=='yes' %}checked{% endif %}> Enable MAC Auth</div>
+              <div class="checkbox-line"><input type="checkbox" name="logging_persistence" {% if base.logging_persistence=='yes' %}checked{% endif %}> Logging Persistence</div>
+              <div class="checkbox-line"><input type="checkbox" name="disable_web_mgmt" {% if base.disable_web_mgmt=='yes' %}checked{% endif %}> Disable Web Management</div>
+              <div class="checkbox-line"><input type="checkbox" name="enable_loop_detection" {% if base.enable_loop_detection=='yes' %}checked{% endif %}> Loop Detection</div>
+            </div>
+          </div>
+
+          <div class="split-actions">
+            <button class="sd-btn primary" type="submit">Render Preview</button>
+            <button class="sd-btn" type="submit" formaction="{{ module_base }}/download">Download Config</button>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        {% if warnings %}
+        <div class="warnings">
+          <strong>Policy / configuration warnings</strong>
+          <ul>{% for w in warnings %}<li>{{ w }}</li>{% endfor %}</ul>
+        </div>
+        {% endif %}
+        <div class="sd-card">
+          <h2>Preview</h2>
+          <pre id="preview-text" class="preview">{{ preview }}</pre>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<script src="{{ module_base }}/static/switch_configurator.js"></script>
+<script>setBrandModels({{ deployment_mode_options|tojson }});</script>
+</body>
+</html>

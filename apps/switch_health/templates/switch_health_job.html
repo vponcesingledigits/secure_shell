@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Switch Health Job {{ job.job_id }}</title>
+  <link rel="icon" href="https://images.squarespace-cdn.com/content/v1/63eaba56d2bc1c0edd1199e0/6c87c44f-feae-44b2-a096-fea952fde4bf/favicon.ico?format=100w">
+  <link rel="stylesheet" href="/static/css/sd-platform.css"><link rel="stylesheet" href="/apps/switch-health/static/switch-health.css">
+  {% if job.status in ['queued','running'] %}<meta http-equiv="refresh" content="4">{% endif %}
+  <link rel="stylesheet" href="/static/css/sd-module-unified.css">
+</head>
+<body>
+<div class="sd-shell">
+  <aside class="sd-sidebar"><div class="sd-brand"><img src="/static/img/logo.png" onerror="this.style.display='none'"><div><b>Single Digits</b><span>Engineering Platform</span></div></div><nav><a href="/">Shell Home</a><a class="active" href="/apps/switch-health">Switch Health</a></nav></aside>
+  <main class="sd-main">
+    <section class="sd-hero"><p class="eyebrow">Job {{ job.job_id }}</p><h1>Switch Health Results</h1><p>Status: <span class="badge {{ job.status }}">{{ job.status }}</span> | Targets: {{ job.targets|length }} | <a href="/apps/switch-health/job/{{ job.job_id }}.json">JSON export</a></p></section>
+    <section class="card"><h2>Session log</h2><pre class="log">{{ '\n'.join(job.log[-80:]) }}</pre></section>
+    {% for result in job.results %}
+    <section class="card switch-card">
+      <h2>{{ result.hostname }} <span class="muted">{{ result.host }}:{{ result.port }}</span></h2>
+      <p><span class="badge {{ result.status }}">{{ result.status }}</span> {{ result.vendor }} / {{ result.platform }} — {{ result.summary }}</p>
+      <div class="finding-groups">
+        {% for sev in ['critical','warning','info'] %}
+          <div><h3>{{ sev|title }}</h3>
+          {% set items = result.findings|selectattr('severity','equalto',sev)|list %}
+          {% if items %}{% for f in items %}<article class="finding {{ f.severity }}"><b>{{ f.title }}</b>{% if f.port %}<span class="port">{{ f.port }}</span>{% endif %}<p>{{ f.detail }}</p>{% if f.evidence %}<pre>{{ f.evidence }}</pre>{% endif %}{% if f.recommendation %}<p class="rec">{{ f.recommendation }}</p>{% endif %}</article>{% endfor %}{% else %}<p class="muted">None</p>{% endif %}</div>
+        {% endfor %}
+      </div>
+      <details><summary>Raw output</summary><p><a href="/apps/switch-health/job/{{ job.job_id }}/raw/{{ result.target }}">Open raw output as text</a></p>{% for cmd,out in result.raw.items() %}<details><summary>{{ cmd }}</summary><pre>{{ out }}</pre></details>{% endfor %}</details>
+    </section>
+    {% endfor %}
+  </main>
+</div>
+</body>
+</html>

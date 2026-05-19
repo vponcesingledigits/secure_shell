@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Topology / As-Built Builder</title>
+  <link rel="icon" href="https://images.squarespace-cdn.com/content/v1/63eaba56d2bc1c0edd1199e0/6c87c44f-feae-44b2-a096-fea952fde4bf/favicon.ico?format=100w">
+  <link rel="stylesheet" href="/apps/topology/static/topology.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <img src="/static/logo.png" onerror="this.style.display='none'" alt="Single Digits">
+    <div><div class="brand-title">Single Digits Engineering Platform</div><div class="brand-sub">Topology / As-Built Builder</div></div>
+  </div>
+  <nav class="nav"><a href="/">Launcher</a><a href="/api/modules">Modules</a></nav>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <h1>Topology / As-Built Builder</h1>
+      <p>LLDP switch topology, port documentation, optional As-Built cards, and executive-ready preview exports.</p>
+    </div>
+    <div class="pill-row">
+      <span class="badge green">Switches only by default</span>
+      <span class="badge">APs optional</span>
+      <span class="badge">All devices optional</span>
+      <span class="badge orange">Preview Salesforce/Zabbix</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-head"><h2>Discovery Scan</h2><span class="muted small">Concurrency defaults to 10 and is capped at 25. No hop limit.</span></div>
+    <form id="scanForm">
+      <div class="grid scan-grid">
+        <div><label>Targets / Subnets</label><textarea name="targets" placeholder="10.187.183.137&#10;10.187.183.0/28">{{ form.targets }}</textarea></div>
+        <div><label>Username</label><input name="username" value="{{ form.username }}" autocomplete="username"></div>
+        <div><label>Password</label><input name="password" type="password" autocomplete="current-password"></div>
+        <div><label>SSH Port</label><input name="port" type="number" value="{{ form.port or 22 }}"></div>
+        <div><label>Timeout</label><input name="timeout" type="number" value="{{ form.timeout or 20 }}"></div>
+        <div><label>Concurrency</label><input name="concurrency" type="number" min="1" max="25" value="{{ form.concurrency or 10 }}"></div>
+      </div>
+      <div class="checkbox-row">
+        <label class="check"><input type="checkbox" name="include_aps" value="true"> Show Access Points</label>
+        <label class="check"><input type="checkbox" name="include_all_devices" value="true"> Show All LLDP Devices</label>
+        <span class="muted small">Unknown objects are collected but hidden unless All LLDP Devices is checked.</span>
+      </div>
+      <div class="actions"><button id="scanBtn" class="btn" type="submit">Build Topology</button><button class="btn secondary" type="button" id="saveManualBtn">Save Manual Cards</button></div>
+    </form>
+  </section>
+
+  <section class="card">
+    <div class="section-head"><div><h2>Real-Time Debug Output</h2><span id="scanStatus" class="muted small">Idle</span></div><button id="clearLog" class="btn ghost small" type="button">Clear Log</button></div>
+    <pre id="debugLog" class="logbox">Waiting for scan activity...</pre>
+  </section>
+
+  <section class="summary">
+    <div class="summary-box"><span>Devices</span><strong id="sumDevices">{{ project.summary.devices }}</strong></div>
+    <div class="summary-box"><span>Switches</span><strong id="sumSwitches">{{ project.summary.switches }}</strong></div>
+    <div class="summary-box"><span>Links</span><strong id="sumLinks">{{ project.summary.links }}</strong></div>
+    <div class="summary-box"><span>Ports</span><strong id="sumPorts">{{ project.summary.ports }}</strong></div>
+    <div class="summary-box"><span>Raw LLDP Neighbors</span><strong id="sumRaw">{{ project.summary.raw_neighbors }}</strong></div>
+  </section>
+
+  <section class="layout">
+    <aside class="card tight">
+      <div class="section-head"><h2>Discovered Devices</h2><span class="muted small">visible set</span></div>
+      <div id="deviceList"></div>
+    </aside>
+    <section class="card">
+      <div class="section-head"><h2>Topology Hierarchy</h2><span class="muted small">switch-to-switch by default</span></div>
+      <div id="treeWrap"></div>
+    </section>
+  </section>
+
+  <section class="card">
+    <details open>
+      <summary>Logical Port Documentation Preview</summary>
+      <div class="details-body">
+        <p class="muted small">Port sheet standard for LLDP Renamer. Patch Panel Port is always blank. Remote Hostname is LLDP-derived only. Down/no-LLDP ports remain listed with empty remote fields when interface inventory is available.</p>
+        <div id="portsWrap"></div>
+      </div>
+    </details>
+  </section>
+
+  <section class="card">
+    <div class="section-head"><h2>Optional As-Built Documentation Cards</h2><span class="muted small">All fields are optional. Cards are repeatable.</span></div>
+    <div class="manual-layout">
+      <aside class="tabs" id="tabs">
+        <button type="button" class="active" data-tab="site">Site</button>
+        <button type="button" data-tab="isp">ISP Circuits</button>
+        <button type="button" data-tab="firewall">Firewalls</button>
+        <button type="button" data-tab="gateway">Gateways</button>
+        <button type="button" data-tab="esxi">ESXi Hosts</button>
+        <button type="button" data-tab="pga">PGA VMs</button>
+        <button type="button" data-tab="rpm">RPM VMs</button>
+        <button type="button" data-tab="vlans">VLANs</button>
+        <button type="button" data-tab="links">Manual Links</button>
+        <button type="button" data-tab="checklist">Checklist</button>
+      </aside>
+      <div>
+        <section id="tab-site" class="tab-panel active">
+          <div class="grid three-col">
+            <div><label>Property Name</label><input data-site="property_name"></div>
+            <div><label>Site Code</label><input data-site="site_code"></div>
+            <div><label>Brand</label><input data-site="brand" placeholder="Marriott / Hyatt / Generic"></div>
+            <div><label>Property Type</label><select data-site="property_type"><option></option><option>BAS</option><option>MIC</option><option>FUL</option><option>Custom</option></select></div>
+            <div><label>Prepared By</label><input data-site="prepared_by"></div>
+            <div><label>Document Version</label><input data-site="document_version" placeholder="0.1"></div>
+            <div><label>Survey / Install Date</label><input data-site="survey_install_date" type="date"></div>
+            <div><label>Salesforce Account / Project / Opportunity ID</label><input data-site="salesforce_project_id"></div>
+            <div><label>Address</label><input data-site="address"></div>
+          </div>
+          <div style="margin-top:14px"><label>Notes</label><textarea data-site="notes"></textarea></div>
+        </section>
+
+        <section id="tab-isp" class="tab-panel"><div class="actions"><button class="btn small" type="button" data-add="isp">Add ISP Circuit</button></div><div id="cards-isp"></div></section>
+        <section id="tab-firewall" class="tab-panel"><div class="actions"><button class="btn small" type="button" data-add="firewall">Add Firewall</button></div><div id="cards-firewall"></div></section>
+        <section id="tab-gateway" class="tab-panel"><div class="actions"><button class="btn small" type="button" data-add="gateway">Add Gateway</button></div><div id="cards-gateway"></div></section>
+        <section id="tab-esxi" class="tab-panel"><div class="actions"><button class="btn small" type="button" data-add="esxi">Add ESXi Host</button></div><div id="cards-esxi"></div></section>
+        <section id="tab-pga" class="tab-panel"><div class="actions"><button class="btn small" type="button" data-add="pga">Add PGA VM</button></div><div id="cards-pga"></div></section>
+        <section id="tab-rpm" class="tab-panel"><div class="actions"><button class="btn small" type="button" data-add="rpm">Add RPM VM</button></div><div id="cards-rpm"></div></section>
+        <section id="tab-vlans" class="tab-panel"><div class="actions"><button class="btn small" type="button" data-add="vlan">Add VLAN</button></div><div id="cards-vlan"></div></section>
+        <section id="tab-links" class="tab-panel"><div class="actions"><button class="btn small" type="button" data-add="link">Add Manual Link</button></div><div id="cards-link"></div></section>
+        <section id="tab-checklist" class="tab-panel"><div id="checklistWrap" class="grid two-col"></div></section>
+      </div>
+    </div>
+  </section>
+
+  <section class="export-bar">
+    <div class="section-head"><div><strong>Exports</strong><div class="muted small">Preview schemas can be adjusted after Salesforce and Zabbix import requirements are finalized.</div></div></div>
+    <div class="actions">
+      <button class="btn" type="button" data-export="/apps/topology/export/asbuilt-pdf" data-filename="single_digits_asbuilt_topology.pdf">As-Built PDF</button>
+      <button class="btn secondary" type="button" data-export="/apps/topology/export/project-json" data-filename="single_digits_asbuilt_project.json">Project JSON</button>
+      <button class="btn secondary" type="button" data-export="/apps/topology/export/ncm-ai-json" data-filename="single_digits_ncm_ai_topology.json">NCM / AI JSON</button>
+      <button class="btn secondary" type="button" data-export="/apps/topology/export/port-sheet.tsv" data-filename="single_digits_port_sheet.tsv">Port Sheet TSV</button>
+      <button class="btn ghost" type="button" data-export="/apps/topology/export/salesforce-preview" data-filename="single_digits_salesforce_preview.json">Salesforce Preview</button>
+      <button class="btn ghost" type="button" data-export="/apps/topology/export/zabbix-preview" data-filename="single_digits_zabbix_preview.json">Zabbix Preview</button>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+window.INITIAL_PROJECT = {{ project | tojson }};
+</script>
+<script src="/apps/topology/static/topology.js"></script>
+</body>
+</html>

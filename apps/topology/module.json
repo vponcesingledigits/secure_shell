@@ -1,0 +1,10 @@
+{
+  "id": "topology",
+  "name": "Topology / As-Built Builder",
+  "version": "0.12.1",
+  "mount": "/apps/topology",
+  "category": "support",
+  "description": "LLDP-based switch topology, logical port documentation, and optional As-Built data capture with NCM/AI, Salesforce preview, Zabbix preview, JSON, TSV, and PDF exports.",
+  "router": "apps.topology.routes",
+  "enabled": true
+}

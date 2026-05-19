@@ -1,0 +1,10 @@
+{
+  "id": "smartzone_ap_investigator",
+  "name": "SmartZone AP Investigator",
+  "version": "0.2.0",
+  "mount": "/apps/smartzone-ap-investigator",
+  "category": "Support Diagnostics",
+  "description": "Version-aware Ruckus SmartZone AP/client investigation using MAC Trace exports, AP support logs, and controller events.",
+  "router": "apps.smartzone_ap_investigator.routes",
+  "enabled": true
+}

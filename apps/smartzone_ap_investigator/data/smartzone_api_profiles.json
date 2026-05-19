@@ -1,0 +1,153 @@
+{
+  "profiles": [
+    {
+      "id": "vsze-5.2.2",
+      "label": "vSZ Essentials 5.2.2",
+      "platform": "vSZ-E",
+      "smartzone_version": "5.2.2",
+      "recommended_api_version": "v9_1",
+      "api_versions": [
+        "v6_0",
+        "v6_1",
+        "v7_0",
+        "v8_0",
+        "v8_1",
+        "v8_2",
+        "v9_0",
+        "v9_1"
+      ],
+      "public_prefixes": [
+        "wsg/api/public",
+        "api/public"
+      ]
+    },
+    {
+      "id": "vszh-5.2.2",
+      "label": "vSZ High Scale 5.2.2",
+      "platform": "vSZ-H",
+      "smartzone_version": "5.2.2",
+      "recommended_api_version": "v9_1",
+      "api_versions": [
+        "v6_0",
+        "v6_1",
+        "v7_0",
+        "v8_0",
+        "v8_1",
+        "v8_2",
+        "v9_0",
+        "v9_1"
+      ],
+      "public_prefixes": [
+        "wsg/api/public",
+        "api/public"
+      ]
+    },
+    {
+      "id": "vsze-6.1.2",
+      "label": "vSZ Essentials 6.1.2",
+      "platform": "vSZ-E",
+      "smartzone_version": "6.1.2",
+      "recommended_api_version": "v11_1",
+      "api_versions": [
+        "v9_0",
+        "v9_1",
+        "v10_0",
+        "v11_0",
+        "v11_1"
+      ],
+      "public_prefixes": [
+        "wsg/api/public",
+        "api/public"
+      ]
+    },
+    {
+      "id": "vszh-6.1.2",
+      "label": "vSZ High Scale 6.1.2",
+      "platform": "vSZ-H",
+      "smartzone_version": "6.1.2",
+      "recommended_api_version": "v11_1",
+      "api_versions": [
+        "v9_0",
+        "v9_1",
+        "v10_0",
+        "v11_0",
+        "v11_1"
+      ],
+      "public_prefixes": [
+        "wsg/api/public",
+        "api/public"
+      ]
+    },
+    {
+      "id": "sz100-7.0.0",
+      "label": "SmartZone 100 7.0.0",
+      "platform": "SZ100",
+      "smartzone_version": "7.0.0",
+      "recommended_api_version": "v12_0",
+      "api_versions": [
+        "v10_0",
+        "v11_0",
+        "v11_1",
+        "v12_0"
+      ],
+      "public_prefixes": [
+        "wsg/api/public",
+        "api/public"
+      ]
+    },
+    {
+      "id": "vszh-7.0.0",
+      "label": "vSZ High Scale 7.0.0",
+      "platform": "vSZ-H",
+      "smartzone_version": "7.0.0",
+      "recommended_api_version": "v12_0",
+      "api_versions": [
+        "v10_0",
+        "v11_0",
+        "v11_1",
+        "v12_0"
+      ],
+      "public_prefixes": [
+        "wsg/api/public",
+        "api/public"
+      ]
+    },
+    {
+      "id": "switch-manager-7.1.1",
+      "label": "Switch Manager 7.1.1 patch1",
+      "platform": "Switch Manager",
+      "smartzone_version": "7.1.1",
+      "recommended_api_version": "v13_1",
+      "api_versions": [
+        "v11_0",
+        "v11_1",
+        "v12_0",
+        "v13_0",
+        "v13_1"
+      ],
+      "public_prefixes": [
+        "switchm/api"
+      ],
+      "note": "Switch Manager API is indexed for future switch-management work; AP Investigator uses SmartZone wireless public APIs."
+    }
+  ],
+  "wireless_investigation_endpoint_templates": [
+    "POST /{api_version}/serviceTicket",
+    "POST /{api_version}/query/ap",
+    "GET /{api_version}/aps/{apMac}",
+    "GET /{api_version}/aps/{apMac}/operational/summary",
+    "GET /{api_version}/aps/{apMac}/supportLog",
+    "POST /{api_version}/query/client",
+    "POST /{api_version}/alert/alarm/list",
+    "POST /{api_version}/alert/event/list"
+  ],
+  "source_docs": [
+    "Virtual SmartZone - Essentials Public API Reference Guide522e.html",
+    "Virtual SmartZone - High Scale Public API Reference Guide522 h.html",
+    "Virtual SmartZone - High Scale Public API Reference Guide612 high scale.html",
+    "Virtual SmartZone - Essentials Public API Reference Guide 612 e.html",
+    "SmartZone 100 Public API Reference Guide.html",
+    "Virtual SmartZone - High Scale Public API Reference Guide 700.html",
+    "Switch Manager.html"
+  ]
+}

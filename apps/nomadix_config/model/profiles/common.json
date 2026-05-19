@@ -1,0 +1,142 @@
+{
+  "model_version": "alpha_0_7_shell_ready_clean",
+  "scope": "Nomadix guided configuration builder model with expanded file pull/analyze, HA-pair device identity, standard WAN defaults, and Main Configuration Page handoff schema.",
+  "profile_selector": {
+    "preferred": [
+      "CLP-Marriott",
+      "CLP-Hyatt",
+      "Sonesta-11OS"
+    ],
+    "legacy": [
+      "BAP-Marriott"
+    ],
+    "manual": [
+      "Other"
+    ]
+  },
+  "global_rules": {
+    "external_web_server_url": {
+      "rule": "always_blank"
+    },
+    "wan_vlan_tagging": {
+      "enabled": false,
+      "vlan_id": "1",
+      "reason": "WAN tagging is handled at the switch"
+    },
+    "port_location": {
+      "vlan_id_mode": "802.1Q two-way",
+      "always_force_802_1q": true,
+      "qinq_8021ad": false,
+      "ether_type_qinq": "0x88a8"
+    },
+    "primary_wan_watchdog": {
+      "enabled": false
+    },
+    "zone_migration": {
+      "enabled": true,
+      "radius_acct_terminate_cause": "24",
+      "confirmed_key": {
+        "current.txt": {
+          "nse_update_authfile_vlan_upon_migration": "yes"
+        }
+      },
+      "needs_key_confirmation": [
+        "exact relogin after migration key",
+        "exact Acct-Terminate-Cause config key"
+      ]
+    },
+    "snmp_inputs": {
+      "always_prompt_user": true,
+      "fields": [
+        "SNMP RO String",
+        "SNMP RW String",
+        "SNMP Port"
+      ],
+      "defaults": {
+        "snmpdOn": "true",
+        "snmpdMode": "1",
+        "snmpdPort": "161"
+      }
+    },
+    "time_ntp": {
+      "timezone": {
+        "mode": "IANA Time Zone Database",
+        "region": "user_selected",
+        "city": "user_selected"
+      },
+      "ntp": {
+        "dateAndTimeType": "1",
+        "ntpServerTimeout": "5",
+        "ntpServer1": "time-a.singledigits.net",
+        "ntpServer2": "time-b.singledigits.net",
+        "ntpServer3": "158.43.128.33",
+        "ntpServer4": "193.204.114.233"
+      }
+    },
+    "access_control_standard_clp_bap": {
+      "cliSessionTimeout": "10",
+      "blockTelnet_NS": "true",
+      "blockMngt_HTTP_NS": "true",
+      "blockMngt_HTTPS_NS": "false",
+      "blockFTP_NS": "true",
+      "blockSFTP_NS": "false",
+      "blockSSH_NS": "false",
+      "blockTelnet_SS": "true",
+      "blockMngt_HTTP_SS": "true",
+      "blockMngt_HTTPS_SS": "true",
+      "blockFTP_SS": "true",
+      "blockSFTP_SS": "true",
+      "blockSSH_SS": "true",
+      "ssl_v2_v3_allow": "false",
+      "tls_v1_1_allow": "false",
+      "ssl_des_3des_allow": "false",
+      "accCntrl_IP_Enable": "true",
+      "accCntrl_IPv6ToSubsideDev_Enable": "false"
+    },
+    "bandwidth_management": {
+      "enable": "true",
+      "groupBwPoliciesOn": "true",
+      "weightedFairQOn": "true",
+      "shareUnusedBwOn": "false",
+      "defaultValidSubscriberMaxUpBw": "10240",
+      "defaultValidSubscriberMaxDownBw": "10240",
+      "defaultPendingSubscriberMaxUpBw": "10240",
+      "defaultPendingSubscriberMaxDownBw": "10240"
+    },
+    "vlan_bandwidth_limits": "disabled_for_all_vlans",
+    "nomadix_wan_defaults": {
+      "ip_address": "192.168.223.131",
+      "subnet_mask": "255.255.255.128",
+      "gateway": "192.168.223.129",
+      "ha_secondary_ip": "192.168.223.132",
+      "wan_vlan_tagging_enabled": false,
+      "wan_vlan_id": "1",
+      "dns_source": "brand_profile"
+    },
+    "device_naming": {
+      "pattern": "<sitecode><devicecode><sequence>-<floor>-<closet>",
+      "nomadix_device_code": "GW",
+      "examples": [
+        "PVDLWGW01-03-MDF",
+        "PVDLWGW02-03-MDF"
+      ]
+    }
+  },
+  "common_aaa": {
+    "current.txt": {
+      "aaa_billPrintEnabled": "no",
+      "aaa_passthru_port_on": "no",
+      "aaa_passthru_port": "0",
+      "aaa_dot1x_on": "no",
+      "aaa_dot1x_reauthperiod": "0",
+      "usg_os_encoding_on": "yes",
+      "aaa_relogin_on": "no",
+      "portbased_billing_policies_on": "yes",
+      "aaa_paypal_on": "no"
+    },
+    "nseconf.txt": {
+      "aaa.portBasedBillingPolicies": "true",
+      "aaa.facebookLogin": "false"
+    }
+  }
+}

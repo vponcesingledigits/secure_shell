@@ -1,0 +1,10 @@
+{
+  "id": "mikrotik-router",
+  "name": "MikroTik Router Builder",
+  "version": "Alpha 0.6 consolidated",
+  "mount": "/apps/mikrotik-router",
+  "category": "Configuration Builder",
+  "description": "Generate RouterOS v7 public circuit router configs.",
+  "router": "apps.mikrotik_router.routes",
+  "enabled": true
+}

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Single Digits Port Map</title>
+  <link rel="icon" href="https://images.squarespace-cdn.com/content/v1/63eaba56d2bc1c0edd1199e0/6c87c44f-feae-44b2-a096-fea952fde4bf/favicon.ico?format=100w">
+  <link rel="stylesheet" href="/apps/port-map/static/port_map.css">
+  <link rel="stylesheet" href="/static/css/sd-platform.css">
+  <link rel="stylesheet" href="/static/css/sd-module-unified.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">Single Digits Engineering Platform</div>
+      <h1>Port Map</h1>
+    </div>
+    <nav>
+      <a href="/">Shell</a>
+      <a href="/apps/port-map/export/pdf">Executive PDF</a>
+      <a href="/apps/port-map/export/excel">Excel Export</a>
+      <a href="/apps/port-map/export/json">JSON</a>
+    </nav>
+  </header>
+
+  <main class="layout">
+    <section class="panel controls">
+      <h2>Scan</h2>
+      <form id="scanForm">
+        <label>Targets or subnets</label>
+        <textarea name="targets" rows="6" placeholder="10.10.10.0/24&#10;10.10.20.5&#10;10.10.20.6:2222"></textarea>
+        <div class="grid2">
+          <div><label>Username</label><input name="username" autocomplete="username"></div>
+          <div><label>Password</label><input name="password" type="password" autocomplete="current-password"></div>
+        </div>
+        <div class="grid2">
+          <label class="check"><input type="checkbox" name="subnet_only"> Subnet-only scan</label>
+          <label class="check"><input type="checkbox" name="include_macs" checked> Include MAC/VLAN visibility</label>
+        </div>
+        <label>Concurrency</label>
+        <input name="concurrency" type="number" min="1" max="25" value="10">
+        <button type="submit">Run Port Map</button>
+      </form>
+      <div class="hint">APs and edge endpoints are hidden by default. Infrastructure links are shown first.</div>
+      <h3>Import previous JSON</h3>
+      <input type="file" id="jsonImport" accept="application/json">
+    </section>
+
+    <section class="panel results">
+      <div class="resultHeader">
+        <div>
+          <h2>Tree Map</h2>
+          <p id="summary">No scan loaded.</p>
+        </div>
+        <div class="rightHeaderTools">
+          <div class="toggles">
+            <label><input type="checkbox" id="showAps"> Show APs</label>
+            <label><input type="checkbox" id="showEdges"> Show edge/endpoints</label>
+            <label><input type="checkbox" id="showEmpty"> Show empty/down</label>
+          </div>
+          <section class="liveStatus" aria-live="polite">
+            <div class="liveStatusTitle"><span class="pulse" id="statusPulse"></span>Live Status</div>
+            <div class="statusGrid">
+              <span>Current device</span><strong id="statusDevice">—</strong>
+              <span>Current command</span><strong id="statusCommand">Idle</strong>
+              <span>Devices scanned</span><strong id="statusScanned">0</strong>
+              <span>Neighbors found</span><strong id="statusNeighbors">0</strong>
+              <span>Queue remaining</span><strong id="statusQueue">0</strong>
+              <span>Elapsed</span><strong id="statusElapsed">0s</strong>
+            </div>
+            <div class="miniLog" id="statusLog">No scan running.</div>
+          </section>
+        </div>
+      </div>
+      <div id="tree" class="tree"></div>
+    </section>
+  </main>
+
+  <section class="panel full">
+    <div class="resultHeader">
+      <h2>Rename Preview</h2>
+      <button id="previewRename">Generate Commands</button>
+    </div>
+    <div class="warning">Rename push is intentionally opt-in. Only confident LLDP system-name/hostname generates a rename suggestion.</div>
+    <pre id="renameOutput"></pre>
+  </section>
+
+<script src="/apps/port-map/static/port_map.js"></script>
+</body>
+</html>

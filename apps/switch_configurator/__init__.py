@@ -1,0 +1,1 @@
+"""Switch Configurator shell module."""

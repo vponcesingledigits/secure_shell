@@ -1,0 +1,10 @@
+{
+  "id": "nomadix-config",
+  "name": "Nomadix Configuration Builder",
+  "version": "0.7.0-alpha-shell-ready",
+  "mount": "/apps/nomadix-config",
+  "category": "Configuration Builder",
+  "description": "Guided Nomadix/NSE configuration builder with cleaned Alpha 0.7 shell interface, expanded active config SFTP pull/analyze engine, HA pair device identity, standard WAN defaults, profile-driven CLP/BAP/Sonesta models, and reviewable export package.",
+  "router": "apps.nomadix_config.routes",
+  "enabled": true
+}

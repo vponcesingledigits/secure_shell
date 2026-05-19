@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero"><p class="eyebrow">Monitoring Tool</p><h1>Health Summary</h1><p class="lead">Saved monitoring/down-device runs summarized by platform and result.</p></section>
+<div class="grid two">
+  <section class="panel"><h2>Detected Platform</h2><table><tr><th>Platform</th><th>Count</th></tr>{% for name, count in counts.items() %}<tr><td>{{ name }}</td><td>{{ count }}</td></tr>{% endfor %}</table></section>
+  <section class="panel"><h2>Result Summary</h2><table><tr><th>Status</th><th>Count</th></tr>{% for name, count in cause_counts.items() %}<tr><td>{{ name }}</td><td>{{ count }}</td></tr>{% endfor %}</table></section>
+</div>
+<section class="panel"><h2>Recent Runs</h2><table><tr><th>Run</th><th>Created</th><th>Status</th><th>Parent</th><th>Port</th></tr>{% for run in runs %}<tr><td><a href="/apps/monitoring/runs/{{ run.run_id }}">{{ run.run_id }}</a></td><td>{{ run.created_at }}</td><td>{{ run.result.status }}</td><td>{{ run.result.parent_ip }}</td><td>{{ run.result.identified_port or '-' }}</td></tr>{% endfor %}</table></section>
+{% endblock %}

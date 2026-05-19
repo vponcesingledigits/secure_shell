@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title or "Disconnect / Off-Service" }}</title>
+  <link rel="icon" href="https://images.squarespace-cdn.com/content/v1/63eaba56d2bc1c0edd1199e0/6c87c44f-feae-44b2-a096-fea952fde4bf/favicon.ico?format=100w">
+  <link rel="stylesheet" href="/static/css/sd-platform.css">
+  <link rel="stylesheet" href="/static/css/sd-module-unified.css">
+  <link rel="stylesheet" href="/apps/off-service/static/off_service.css">
+</head>
+<body>
+  <main class="sd-page offsvc">
+    <section class="sd-hero">
+      <div>
+        <p class="eyebrow">Configuration Builder</p>
+        <h1>{{ title or "Disconnect / Off-Service" }}</h1>
+        <p>Preview, approve, and document Disconnect / Off-Service changes using shared shell command profiles.</p>
+      </div>
+      <a class="sd-button secondary" href="/">Shell Home</a>
+    </section>
+
+    {% if mode == "preview" %}
+    <section class="sd-card">
+      <h2>Preview</h2>
+      <p><b>Targets:</b> {{ target_count }} &nbsp; <b>Vendor profile:</b> {{ vendor }}</p>
+      <pre>{{ redacted_commands }}</pre>
+    </section>
+
+    {% if handoff_username and handoff_password %}
+    <section class="sd-card handoff">
+      <h2>Vendor Handoff Credential</h2>
+      <p>This is shown here for handoff. It is redacted from command preview/log-style output.</p>
+      <table>
+        <tr><th>Username</th><td><code>{{ handoff_username }}</code></td></tr>
+        <tr><th>Password</th><td><code>{{ handoff_password }}</code></td></tr>
+      </table>
+    </section>
+    {% endif %}
+
+    <section class="sd-card warning">
+      <h3>Approval Gate</h3>
+      <p>Device-push wiring should call the shell shared SSH executor after review. Keep dry-run as the default behavior.</p>
+      <p><a class="sd-button secondary" href="/apps/off-service">Back to workflow</a></p>
+    </section>
+    {% else %}
+    <section class="sd-card">
+      <h2>Off-Service Workflow</h2>
+      <form method="post" action="/apps/off-service/preview" class="grid-form">
+        <label>Targets<br><textarea name="targets" rows="6" placeholder="10.0.3.130&#10;10.0.3.131:2222"></textarea></label>
+        <label>Login Username<br><input name="username" autocomplete="username"></label>
+        <label>Login Password<br><input name="password" type="password" autocomplete="current-password"></label>
+        <label>Vendor Profile<br>
+          <select name="vendor">
+            <option value="hp_procurve">HP / Aruba ProCurve</option>
+            <option value="cisco_ios">Cisco IOS</option>
+            <option value="aruba_gateway">Aruba Gateway / Controller</option>
+            <option value="auto">Auto / Preview only</option>
+          </select>
+        </label>
+        <label>Credential Handoff Mode<br>
+          <select name="credential_mode">
+            <option value="none">No credential change</option>
+            <option value="create_vendor_user">Create vendor user with randomized password</option>
+            <option value="update_admin_password">Update admin/specified user password</option>
+          </select>
+        </label>
+        <label>Handoff Username<br><input name="handoff_username" value="vendor"></label>
+        <label>Admin/Target Username<br><input name="target_username" value="admin"></label>
+        <label>Aruba Gateway VLANs<br><input name="vlan_ids" value="1000,1016,1025,1029,1030,1050,1400"></label>
+        <div class="actions"><button class="sd-button" type="submit">Preview Off-Service Commands</button></div>
+      </form>
+    </section>
+    <section class="sd-card note">
+      <h3>Sensitive values</h3>
+      <p>TACACS, SNMP, and reusable secrets are read from <code>.env</code> / <code>.env.offservice</code>. The module does not hardcode them.</p>
+    </section>
+    {% endif %}
+  </main>
+  <script src="/apps/off-service/static/off_service.js"></script>
+</body>
+</html>

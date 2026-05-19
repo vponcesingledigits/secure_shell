@@ -1,0 +1,47 @@
+{
+  "internal_web_server": {
+    "ssl_support": true,
+    "encrypt_only_sensitive_data": true,
+    "certificate_dns_name": "ssl.certificate.com",
+    "portal_page_url": "https://bap.aws.opennetworkexchange.net/cn3k/loginapi.jsp",
+    "parameter_passing": true,
+    "parameter_signing_method": "none",
+    "signed_parameters": {
+      "UI": true,
+      "MA": true,
+      "RN": true,
+      "PORT": true,
+      "SIP": true,
+      "QINQ": true
+    },
+    "supports_gis_clients": true,
+    "portal_xml_post_url": "",
+    "portal_xml_post_port": "80",
+    "usernames": true,
+    "new_subscribers": true,
+    "smart_client_support": true
+  },
+  "radius_service_profile": {
+    "profName": "SD-RADIUS",
+    "authProtocol": "0",
+    "authOn": "true",
+    "authPrimUri": "radius1.aws.opennetworkexchange.net",
+    "authPrimPort": "1812",
+    "authPrimRadSecPort": "0",
+    "authAltUri": "radius2.aws.opennetworkexchange.net",
+    "authAltPort": "1812",
+    "authAltRadSecPort": "0",
+    "acctOn": "true",
+    "acctPrimUri": "radius1.aws.opennetworkexchange.net",
+    "acctPrimPort": "1813",
+    "acctPrimRadSecPort": "0",
+    "acctAltUri": "radius2.aws.opennetworkexchange.net",
+    "acctAltPort": "1813",
+    "acctAltRadSecPort": "0",
+    "retryMethod": "0",
+    "retryDelay": "10",
+    "retryAttempts": "2",
+    "radSecOn": "false",
+    "secrets": "prompt_or_secret_ref"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "switchport_name_normalizer",
+  "name": "Switchport Name Normalizer",
+  "version": "0.4.0-alpha",
+  "mount": "/apps/switchport-normalizer",
+  "category": "Configuration Builder",
+  "description": "Configuration Builder module using the shared shell command profiles and LLDP parsers for Ruckus, Aruba CX, HP/Aruba ProCurve, Cisco IOS, TP-Link, and Extreme EXOS to discover switchports, show Topology Builder worksheet columns, and stage approved port-name changes.",
+  "router": "apps.switchport_name_normalizer.routes",
+  "enabled": true
+}

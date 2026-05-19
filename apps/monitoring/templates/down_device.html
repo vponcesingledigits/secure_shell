@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">Monitoring Tool · Alpha 0.7.5</p>
+  <h1>Down Device Troubleshooter</h1>
+  <p class="lead">Read-only live SSH collection from the parent switch. Uses shared vendor detection, paging cleanup, port-name matching, LLDP, interface health, and evidence scoring.</p>
+</section>
+
+<section class="panel">
+  <h2>Investigation Input</h2>
+  <form method="post" action="/apps/monitoring/down-device">
+    <div class="form-grid">
+      <div><label for="down_device_ip">Down Device IP Address</label><input id="down_device_ip" name="down_device_ip" value="{{ input_values.down_device_ip if input_values else '' }}"></div>
+      <div><label for="down_device_mac">Down Device MAC Address</label><input id="down_device_mac" name="down_device_mac" value="{{ input_values.down_device_mac if input_values else '' }}"></div>
+      <div><label for="down_device_hostname">Down Device Hostname</label><input id="down_device_hostname" name="down_device_hostname" value="{{ input_values.down_device_hostname if input_values else '' }}"></div>
+      <div><label for="parent_ip">Parent Device IP Address</label><input id="parent_ip" name="parent_ip" required value="{{ input_values.parent_ip if input_values else '' }}"></div>
+      <div><label for="parent_username">Parent Username</label><input id="parent_username" name="parent_username" required value="{{ input_values.parent_username if input_values else '' }}"></div>
+      <div><label for="parent_password">Parent Password</label><input id="parent_password" type="password" name="parent_password" required></div>
+    </div>
+    <p class="checks">
+      <label><input type="checkbox" name="is_access_point" {% if input_values and input_values.is_access_point %}checked{% endif %}> Treat down device as access point</label>
+      <label><input type="checkbox" name="debug" {% if input_values and input_values.debug %}checked{% endif %}> Debug logging</label>
+    </p>
+    <p><button type="submit">Run Troubleshooter</button> <a class="button" href="/apps/monitoring">Back to Monitoring</a></p>
+  </form>
+</section>
+
+{% if result %}
+<section class="panel {% if result.confidence in ['high','probable'] %}ok{% elif result.status.startswith('SSH') %}critical{% else %}warning{% endif %}">
+  <h2>{{ result.status }}</h2>
+  <p><strong>Confidence:</strong> {{ result.confidence|upper }}{% if run_id %} · <strong>Run:</strong> <a href="/apps/monitoring/runs/{{ run_id }}">{{ run_id }}</a>{% endif %}</p>
+  <div class="grid four">
+    <div><strong>Parent Device</strong><br>{{ result.parent_ip }}<br>{{ result.parent_vendor }}{% if result.parent_hostname %}<br>{{ result.parent_hostname }}{% endif %}</div>
+    <div><strong>Identified Port</strong><br>{{ result.identified_port or 'Not confirmed' }}</div>
+    <div><strong>LLDP Neighbor</strong><br>{{ result.lldp_neighbor_name or 'Not confirmed' }}</div>
+    <div><strong>LLDP Management IP</strong><br>{{ result.lldp_management_ip or 'Not present' }}</div>
+  </div>
+</section>
+
+<div class="grid two">
+  <section class="panel">
+    <h2>Version and Reboot</h2>
+    <table>
+      <tr><th>Model</th><td>{{ result.version_info.model }}</td></tr>
+      <tr><th>Firmware</th><td>{{ result.version_info.firmware_version }}</td></tr>
+      <tr><th>Switch Uptime</th><td>{{ result.version_info.uptime }}</td></tr>
+      <tr><th>Last Reboot Reason</th><td>{{ result.version_info.last_reboot_reason }}</td></tr>
+    </table>
+  </section>
+  <section class="panel">
+    <h2>Recommended Next Steps</h2>
+    <ul>{% for step in result.recommended_next_steps %}<li>{{ step }}</li>{% endfor %}</ul>
+    {% if result.notes %}<h3>Notes</h3><ul>{% for note in result.notes %}<li>{{ note }}</li>{% endfor %}</ul>{% endif %}
+  </section>
+</div>
+
+<section class="panel">
+  <h2>Interface Uptime Review</h2>
+  <table><tr><th>Port</th><th>Admin</th><th>Oper</th><th>Speed</th><th>Interface Uptime</th><th>Down Transitions</th><th>Likely Going Down</th><th>Notes</th></tr>
+    {% for obs in result.interface_observations %}
+    <tr><td>{{ obs.port }}</td><td>{{ obs.admin_state }}</td><td>{{ obs.oper_state }}</td><td>{{ obs.speed_mbps or '-' }}</td><td>{{ obs.interface_uptime }}</td><td>{{ obs.down_transition_count }}</td><td>{{ obs.likely_going_down }}</td><td>{{ ', '.join(obs.notes) }}</td></tr>
+    {% endfor %}
+  </table>
+</section>
+
+{% if result.port_findings %}
+<section class="panel">
+  <h2>Port Health Findings</h2>
+  <table><tr><th>Port</th><th>Neighbor</th><th>Speed</th><th>Flags</th><th>Summary</th></tr>
+    {% for finding in result.port_findings %}
+    <tr><td>{{ finding.port }}</td><td>{{ finding.neighbor_name or '-' }}</td><td>{{ finding.link_speed_mbps or '-' }}</td><td>{% if finding.flap_detected %}flap {% endif %}{% if finding.below_gig %}below-gig {% endif %}{% if finding.total_errors %}errors{% endif %}</td><td>{{ finding.summary }}</td></tr>
+    {% endfor %}
+  </table>
+</section>
+{% endif %}
+
+<section class="panel">
+  <h2>Command Evidence</h2>
+  <pre>{{ result.raw_output }}</pre>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,10 @@
+{
+  "id": "switch_health",
+  "name": "Switch Health",
+  "version": "1.1.0-shell",
+  "mount": "/apps/switch-health",
+  "category": "Support Diagnostics",
+  "description": "Vendor-aware switch health scans for PoE, logs, environment, resources, LLDP, STP, VLANs, and link health.",
+  "router": "apps.switch_health.router",
+  "enabled": true
+}

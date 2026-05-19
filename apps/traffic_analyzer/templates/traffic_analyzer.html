@@ -1,0 +1,78 @@
+{% extends "base.html" if false else "" %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>{{ title }}</title>
+  <link rel="icon" href="https://images.squarespace-cdn.com/content/v1/63eaba56d2bc1c0edd1199e0/6c87c44f-feae-44b2-a096-fea952fde4bf/favicon.ico?format=100w">
+  <link rel="stylesheet" href="/static/css/sd-platform.css">
+  <link rel="stylesheet" href="/apps/traffic-analyzer/static/traffic_analyzer.css">
+</head>
+<body>
+  <main class="sd-page traffic-page">
+    <section class="sd-hero">
+      <div>
+        <p class="sd-kicker">Support Diagnostics</p>
+        <h1>Traffic Analyzer</h1>
+        <p>Uses the same shared MAC/IP investigation engine as MAC Trace, then expands into deeper health evidence.</p>
+      </div>
+    </section>
+
+    <section class="sd-card">
+      <form method="post" action="/apps/traffic-analyzer/scan" class="traffic-form">
+        <label>Seed switch targets</label>
+        <textarea name="targets" rows="5" placeholder="10.0.3.130&#10;10.0.3.131"></textarea>
+
+        <div class="grid">
+          <label>MAC<input name="mac" placeholder="0011.2233.4455" /></label>
+          <label>IP<input name="ip" placeholder="10.0.3.50" /></label>
+          <label>VLAN<input name="vlan" placeholder="optional" /></label>
+          <label>Max hops<input name="max_hops" type="number" value="8" min="1" max="20" /></label>
+        </div>
+
+        <label>Mode</label>
+        <select name="mode">
+          <option value="traffic_quick">Traffic Quick</option>
+          <option value="traffic_deep">Traffic Deep</option>
+          <option value="mac_trace_quick">MAC Trace Quick</option>
+        </select>
+
+        <button type="submit">Run Investigation</button>
+      </form>
+    </section>
+
+    {% if error %}
+    <section class="sd-card error"><strong>Error:</strong> {{ error }}</section>
+    {% endif %}
+
+    {% if result %}
+    <section class="sd-card">
+      <h2>Path Summary</h2>
+      <p>{{ result.path_summary }}</p>
+      <p><strong>Status:</strong> {{ result.status }} | <strong>Final:</strong> {{ result.final_switch_hostname or result.final_switch_ip }} {{ result.final_port }} | <strong>Role:</strong> {{ result.final_role }}</p>
+    </section>
+
+    <section class="sd-card">
+      <h2>Hops</h2>
+      <table>
+        <thead><tr><th>#</th><th>Switch</th><th>Vendor</th><th>Port</th><th>Role</th><th>Neighbor</th><th>Speed/Duplex</th><th>Findings</th></tr></thead>
+        <tbody>
+        {% for hop in result.hops %}
+          <tr>
+            <td>{{ hop.hop_number }}</td>
+            <td>{{ hop.switch_hostname or hop.switch_ip }}</td>
+            <td>{{ hop.vendor }}</td>
+            <td>{{ hop.local_port }}</td>
+            <td>{{ hop.port_role }}</td>
+            <td>{{ hop.neighbor_name }} {{ hop.neighbor_ip }}</td>
+            <td>{{ hop.speed }} {{ hop.duplex }}</td>
+            <td>{{ hop.finding_summary|join('; ') }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </section>
+    {% endif %}
+  </main>
+</body>
+</html>

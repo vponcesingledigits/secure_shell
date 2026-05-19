@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="https://images.squarespace-cdn.com/content/v1/63eaba56d2bc1c0edd1199e0/6c87c44f-feae-44b2-a096-fea952fde4bf/favicon.ico?format=100w" />
+  <title>Nomadix Configuration Builder</title>
+  <style>
+    :root { --bg:#f6f8fb; --panel:#ffffff; --ink:#172033; --muted:#667085; --line:#d9e1ee; --brand:#174a7c; --brand2:#eef6ff; --warn:#9a6700; --danger:#b42318; --ok:#067647; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Inter, Segoe UI, Roboto, Arial, sans-serif; color:var(--ink); background:var(--bg); }
+    header { display:flex; gap:16px; align-items:center; padding:18px 24px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:10; }
+    .logo { width:44px; height:44px; border-radius:12px; object-fit:contain; background:#fff; }
+    .title h1 { margin:0; font-size:22px; }
+    .title p { margin:4px 0 0; color:var(--muted); font-size:13px; }
+    main { padding:22px; max-width:1440px; margin:0 auto; }
+    .grid { display:grid; grid-template-columns: 340px 1fr; gap:18px; align-items:start; }
+    .card { background:var(--panel); border:1px solid var(--line); border-radius:18px; box-shadow:0 8px 24px rgba(21,37,64,.06); overflow:hidden; }
+    .card h2 { margin:0; padding:16px 18px; border-bottom:1px solid var(--line); font-size:16px; }
+    .card .body { padding:16px 18px; }
+    label { display:block; font-size:12px; font-weight:700; color:#344054; margin:12px 0 6px; }
+    select,input,button,textarea { font:inherit; }
+    select,input,textarea { width:100%; border:1px solid var(--line); border-radius:12px; padding:10px 12px; background:#fff; color:var(--ink); }
+    button { border:0; border-radius:12px; padding:10px 14px; background:var(--brand); color:#fff; cursor:pointer; font-weight:700; }
+    button.secondary { background:#e6edf5; color:#20324a; }
+    button.ghost { background:transparent; color:var(--brand); border:1px solid var(--line); }
+    .button-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+    .pill { display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border-radius:999px; background:var(--brand2); color:var(--brand); font-size:12px; font-weight:700; margin:2px 4px 2px 0; }
+    .pill.warn { background:#fff7e6; color:var(--warn); }
+    .pill.ok { background:#ecfdf3; color:var(--ok); }
+    .pill.danger { background:#fef3f2; color:var(--danger); }
+    .tabs { display:flex; gap:6px; padding:10px; border-bottom:1px solid var(--line); background:#fbfdff; flex-wrap:wrap; }
+    .tab { background:#fff; color:#344054; border:1px solid var(--line); padding:8px 12px; border-radius:999px; }
+    .tab.active { background:var(--brand); color:#fff; border-color:var(--brand); }
+    .section { display:none; padding:16px 18px; }
+    .section.active { display:block; }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    th, td { border-bottom:1px solid var(--line); padding:9px 8px; text-align:left; vertical-align:top; }
+    th { color:#344054; background:#f8fafc; font-size:12px; }
+    .small { font-size:12px; color:var(--muted); }
+    .kv { display:grid; grid-template-columns: 220px 1fr; gap:8px; padding:6px 0; border-bottom:1px dashed #e4e9f2; }
+    .kv b { color:#344054; }
+    pre { white-space:pre-wrap; overflow:auto; max-height:520px; background:#0b1020; color:#d6e4ff; padding:14px; border-radius:14px; font-size:12px; }
+    .two { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px; }
+    .three { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:12px; }
+    .alert { border:1px solid #fedf89; background:#fffaeb; color:#7a4f01; padding:12px; border-radius:14px; margin:12px 0; }
+    .success { border-color:#abefc6; background:#ecfdf3; color:#065f46; }
+    @media (max-width: 980px) { .grid, .two, .three { grid-template-columns:1fr; } }
+  </style>
+  <link rel="stylesheet" href="/static/css/sd-platform.css">
+  <link rel="stylesheet" href="/static/css/sd-module-unified.css">
+</head>
+<body>
+  <header>
+    <img class="logo" src="/static/logo.png" onerror="this.style.display='none'" alt="Single Digits" />
+    <div class="title">
+      <h1>Nomadix Configuration Builder</h1>
+      <p>Working model integration · full baseline pull/analyze · profile review · NAS ID aware · export ready</p>
+    </div>
+  </header>
+  <main>
+    <div class="grid">
+      <aside class="card">
+        <h2>Profile Selection</h2>
+        <div class="body">
+          <label for="profileSelect">AAA / Brand Profile</label>
+          <select id="profileSelect"></select>
+          <div id="profileBadges" style="margin-top:10px"></div>
+          <div class="alert">
+            This is the model-integrated shell view. It previews desired config objects and analyzes baseline ZIPs. Exports now create a reviewable desired-config package. Live push / fully patched restore ZIP is still separate until the patch engine is validated.
+          </div>
+          <h3 style="margin:16px 0 0">Site / Hostname Helper</h3>
+          <div class="three">
+            <div><label>Site Code</label><input id="site_code" placeholder="PVDLW"></div>
+            <div><label>Floor</label><input id="floor" value="03"></div>
+            <div><label>Closet</label><input id="closet" value="MDF"></div>
+          </div>
+          <p class="small">Hostname pattern: <code>&lt;sitecode&gt;GW&lt;sequence&gt;-&lt;floor&gt;-&lt;closet&gt;</code>, for example <code>PVDLWGW01-03-MDF</code>.</p>
+
+          <h3 style="margin:16px 0 0">WAN Defaults</h3>
+          <div class="three">
+            <div><label>WAN IP *</label><input id="wan_ip" value="192.168.223.131"></div>
+            <div><label>Netmask *</label><input id="wan_netmask" value="255.255.255.128"></div>
+            <div><label>Gateway *</label><input id="wan_gateway" value="192.168.223.129"></div>
+          </div>
+          <p class="small">DNS values come from the selected brand profile. WAN VLAN tagging remains disabled / VLAN 1 because tagging is handled on the switch.</p>
+
+          <label style="display:flex;align-items:center;gap:8px;margin-top:16px"><input id="configure_ha_pair" type="checkbox" style="width:auto" onchange="toggleHaFields()"> Configure an HA Pair</label>
+          <div class="two">
+            <div>
+              <h3>GW01</h3>
+              <label>GW01 IP</label><input id="primary_wan_ip" value="192.168.223.131">
+              <label>GW01 NAS ID / NSE ID *</label><input id="primary_nas_id" placeholder="last 6 of WAN MAC, lowercase">
+              <label>GW01 WAN MAC (optional)</label><input id="primary_wan_mac" placeholder="used to infer NAS ID">
+            </div>
+            <div id="haSecondaryFields" style="display:none">
+              <h3>GW02</h3>
+              <label>GW02 IP</label><input id="secondary_wan_ip" value="192.168.223.132">
+              <label>GW02 NAS ID / NSE ID *</label><input id="secondary_nas_id" placeholder="last 6 of WAN MAC, lowercase">
+              <label>GW02 WAN MAC (optional)</label><input id="secondary_wan_mac" placeholder="used to infer NAS ID">
+            </div>
+          </div>
+          <p class="small">NAS ID is unique per device. It should be defined early and should be the last six hex characters of the WAN MAC, lowercase.</p>
+
+          <h3 style="margin:16px 0 0">SNMP</h3>
+          <div class="three">
+            <div><label>SNMP RO *</label><input id="snmp_ro" placeholder="read community"></div>
+            <div><label>SNMP RW *</label><input id="snmp_rw" placeholder="write community"></div>
+            <div><label>SNMP Port</label><input id="snmp_port" value="161"></div>
+          </div>
+          <div class="button-row">
+            <button onclick="loadProfile()">Load Profile</button>
+            <button class="secondary" onclick="compose()">Compose Desired Config</button>
+            <button class="ghost" onclick="exportConfig()">Export Config Package</button>
+          </div>
+          <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+          <h3 style="margin:0 0 6px">Import Baseline</h3>
+          <p class="small">Use SFTP to pull a read-only backup from the Nomadix, or upload an existing export ZIP.</p>
+          <div class="alert" id="expectedFilesBox">
+            <b>Expected files:</b><br>
+            Loading full active config file list...
+          </div>
+
+          <label>Get current config via SFTP</label>
+          <div class="three">
+            <div><label>Nomadix IP *</label><input id="sftp_host" placeholder="10.x.x.x"></div>
+            <div><label>SSH Port *</label><input id="sftp_port" value="22"></div>
+            <div><label>Remote Dir</label><input id="sftp_remote_dir" value="/flash"></div>
+          </div>
+          <div class="two">
+            <div><label>Username *</label><input id="sftp_username" autocomplete="username"></div>
+            <div><label>Password *</label><input id="sftp_password" type="password" autocomplete="current-password"></div>
+          </div>
+          <div class="button-row"><button class="ghost" onclick="pullBaselineSftp()">Get Current Config</button></div>
+          <div id="sftpResult"></div>
+
+          <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+          <label>Or analyze uploaded Nomadix baseline ZIP</label>
+          <input type="file" id="baselineZip" accept=".zip" />
+          <div class="button-row"><button class="ghost" onclick="analyzeBaseline()">Analyze Baseline ZIP</button></div>
+          <div id="analyzeResult"></div>
+        </div>
+      </aside>
+
+      <section class="card">
+        <div class="tabs">
+          <button class="tab active" data-tab="overview" onclick="showTab('overview')">Overview</button>
+          <button class="tab" data-tab="aaa" onclick="showTab('aaa')">AAA</button>
+          <button class="tab" data-tab="passthrough" onclick="showTab('passthrough')">Passthrough</button>
+          <button class="tab" data-tab="vlan" onclick="showTab('vlan')">VLANs / DHCP</button>
+          <button class="tab" data-tab="standards" onclick="showTab('standards')">Standards</button>
+          <button class="tab" data-tab="json" onclick="showTab('json')">JSON</button>
+        </div>
+        <div id="overview" class="section active"></div>
+        <div id="aaa" class="section"></div>
+        <div id="passthrough" class="section"></div>
+        <div id="vlan" class="section"></div>
+        <div id="standards" class="section"></div>
+        <div id="json" class="section"><pre id="jsonPre">Loading...</pre></div>
+      </section>
+    </div>
+  </main>
+<script>
+let currentProfile = null;
+let currentCompose = null;
+
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function pill(text, cls=''){ return `<span class="pill ${cls}">${esc(text)}</span>`; }
+function rows(obj){ return Object.entries(obj || {}).map(([k,v]) => `<div class="kv"><b>${esc(k)}</b><span>${esc(typeof v==='object'?JSON.stringify(v):v)}</span></div>`).join(''); }
+function table(headers, items){
+  return `<table><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${items.join('')}</tbody></table>`;
+}
+function showTab(id){ document.querySelectorAll('.section').forEach(s=>s.classList.remove('active')); document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelector(`[data-tab="${id}"]`).classList.add('active'); }
+function toggleHaFields(){ document.getElementById('haSecondaryFields').style.display = document.getElementById('configure_ha_pair').checked ? 'block' : 'none'; }
+
+async function loadExpectedFiles(){
+  const box = document.getElementById('expectedFilesBox');
+  try {
+    const res = await fetch('/apps/nomadix-config/api/files/expected');
+    const data = await res.json();
+    const req = data.core_required || [];
+    const opt = data.core_optional || [];
+    const cert = data.certificate_related_optional || [];
+    box.innerHTML = `
+      <b>Expected active config files:</b><br>
+      <span class="small">These are pulled from <code>/flash</code> and analyzed as the active baseline. The old six-file set is partial only.</span>
+      <div style="margin-top:8px"><b>Required:</b> ${esc(req.join(', '))}</div>
+      <div style="margin-top:6px"><b>Optional active config:</b> ${esc(opt.join(', '))}</div>
+      <details style="margin-top:8px"><summary><b>Certificate-related optional files</b></summary><div class="small">${esc(cert.join(', '))}</div></details>
+    `;
+  } catch (err) {
+    box.innerHTML = '<b>Expected active config files:</b><br>current.txt, nseconf.txt, wanconf.txt, ifmonitor.txt, RoomFileV2.txt, inatconf.txt, mfilter.txt, netconf.txt, lbstate.txt, subnets.txt, routeConf.txt';
+  }
+}
+
+async function init(){
+  await loadExpectedFiles();
+  const res = await fetch('/apps/nomadix-config/api/model/summary');
+  const summary = await res.json();
+  const sel = document.getElementById('profileSelect');
+  sel.innerHTML = summary.profiles.map(p => `<option value="${esc(p.id)}">${esc(p.id)} — ${esc(p.status)}</option>`).join('');
+  document.getElementById('jsonPre').textContent = JSON.stringify(summary, null, 2);
+  await loadProfile();
+}
+
+async function loadProfile(){
+  const id = document.getElementById('profileSelect').value;
+  const res = await fetch(`/apps/nomadix-config/api/profiles/${encodeURIComponent(id)}`);
+  currentProfile = await res.json();
+  renderProfile();
+  await compose();
+}
+
+async function compose(){
+  const id = document.getElementById('profileSelect').value;
+  const payload = {
+    site_code: document.getElementById('site_code').value,
+    floor: document.getElementById('floor').value || '03',
+    closet: document.getElementById('closet').value || 'MDF',
+    configure_ha_pair: document.getElementById('configure_ha_pair').checked,
+    wan_ip: document.getElementById('wan_ip').value,
+    primary_wan_ip: document.getElementById('primary_wan_ip').value || document.getElementById('wan_ip').value,
+    secondary_wan_ip: document.getElementById('secondary_wan_ip').value || '192.168.223.132',
+    wan_netmask: document.getElementById('wan_netmask').value,
+    wan_gateway: document.getElementById('wan_gateway').value,
+    primary_nas_id: document.getElementById('primary_nas_id').value,
+    secondary_nas_id: document.getElementById('secondary_nas_id').value,
+    primary_wan_mac: document.getElementById('primary_wan_mac').value,
+    secondary_wan_mac: document.getElementById('secondary_wan_mac').value,
+    snmp_ro: document.getElementById('snmp_ro').value,
+    snmp_rw: document.getElementById('snmp_rw').value,
+    snmp_port: document.getElementById('snmp_port').value || '161'
+  };
+  const res = await fetch(`/apps/nomadix-config/api/compose/${encodeURIComponent(id)}`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+  currentCompose = await res.json();
+  renderProfile();
+}
+
+function renderProfile(){
+  if(!currentProfile) return;
+  const p = currentProfile.profile || {};
+  document.getElementById('profileBadges').innerHTML = [
+    pill(p.aaa_family || 'Other', 'ok'),
+    pill(p.brand_variant || 'Manual'),
+    p.requires_certificate_upload ? pill('certificate required','warn') : '',
+    p.status === 'legacy' ? pill('legacy','danger') : pill(p.status || 'active','ok')
+  ].join(' ');
+
+  const desired = currentCompose?.desired_config || {};
+  const warnings = currentCompose?.warnings || [];
+  document.getElementById('overview').innerHTML = `
+    <h2>Profile Overview</h2>
+    <div class="body">
+      <div>${pill('Passthrough: '+(currentProfile.passthrough_profile||'none'))}${pill('ACL: '+(currentProfile.acl_profile||'none'))}${pill('VLAN: '+(currentProfile.vlan_profile||'none'))}${pill('DHCP: '+(currentProfile.dhcp_profile||'none'))}</div>
+      <div class="two" style="margin-top:12px">
+        <div class="card"><h2>DNS / WAN Defaults</h2><div class="body">${rows(p.dns || {})}${rows(desired['netconf.txt'] || {})}</div></div>
+        <div class="card"><h2>Device Identity</h2><div class="body">${rows(currentCompose?.device_identity || {})}</div></div>
+        <div class="card"><h2>Warnings</h2><div class="body">${warnings.map(w=>`<div class="alert">${esc(w)}</div>`).join('')}</div></div>
+      </div>
+    </div>`;
+
+  const shared = currentProfile.shared || {};
+  document.getElementById('aaa').innerHTML = `
+    <h2>AAA Model</h2><div class="body">
+      <div class="two">
+        <div><h3>Internal Web Server / Portal</h3>${rows(shared.internal_web_server || {})}</div>
+        <div><h3>XML / RADIUS</h3>${rows(shared.xml_options || {})}<h3>Radius Client</h3>${rows(p.radius_client || {})}<h3>MAC Auth</h3>${rows(p.mac_auth || {})}</div>
+      </div>
+    </div>`;
+
+  const pass = currentProfile.passthrough || {};
+  const dns = pass.dns_names || [];
+  const ips = pass.ipv4_addresses || [];
+  document.getElementById('passthrough').innerHTML = `
+    <h2>Passthrough Profile</h2><div class="body">
+      <p>${pill(`${dns.length} DNS names`)} ${pill(`${ips.length} IPv4 addresses`)}</p>
+      ${table(['DNS Names'], dns.slice(0, 200).map(x=>`<tr><td>${esc(x)}</td></tr>`))}
+      ${ips.length ? '<h3>IPv4 Addresses</h3>'+table(['IPv4'], ips.map(x=>`<tr><td>${esc(x)}</td></tr>`)) : ''}
+    </div>`;
+
+  const vlans = currentProfile.vlan_port_locations || [];
+  const dhcp = currentProfile.dhcp || [];
+  document.getElementById('vlan').innerHTML = `
+    <h2>VLANs / DHCP</h2><div class="body">
+      <h3>Port-Location / VLAN Defaults</h3>
+      ${table(['Port','Location','Description','State','Billing','DHCP','Subnet','Intra-port'], vlans.map(v=>`<tr><td>${esc(v.port)}</td><td>${esc(v.location)}</td><td>${esc(v.description)}</td><td>${esc(v.state)}</td><td>${esc(v.billing)}</td><td>${esc(v.provide_dhcp)}</td><td>${esc(v.subnet)}</td><td>${esc(v.intra_port)}</td></tr>`))}
+      <h3>DHCP Profile</h3>
+      ${Array.isArray(dhcp) ? table(['Pool','Server IP','Netmask','Start','Stop','Lease','Default'], dhcp.map(d=>`<tr><td>${esc(d.poolId)}</td><td>${esc(d.server_ip)}</td><td>${esc(d.netmask)}</td><td>${esc(d.pool_start_ip)}</td><td>${esc(d.pool_stop_ip)}</td><td>${esc(d.lease_minutes)}</td><td>${esc(d.default_pool)}</td></tr>`)) : `<pre>${esc(JSON.stringify(dhcp,null,2))}</pre>`}
+    </div>`;
+
+  const rules = currentProfile.common_rules || {};
+  document.getElementById('standards').innerHTML = `
+    <h2>Standards / Safety Rules</h2><div class="body">
+      <div class="two"><div>${rows(rules)}</div><div><h3>Unresolved Mappings</h3>${(currentProfile.unresolved_mappings||[]).map(x=>`<div class="alert">${esc(x)}</div>`).join('')}</div></div>
+    </div>`;
+  document.getElementById('jsonPre').textContent = JSON.stringify({profile: currentProfile, composed: currentCompose}, null, 2);
+}
+
+async function exportConfig(){
+  await compose();
+  const id = document.getElementById('profileSelect').value;
+  const payload = {
+    site_code: document.getElementById('site_code').value,
+    floor: document.getElementById('floor').value || '03',
+    closet: document.getElementById('closet').value || 'MDF',
+    configure_ha_pair: document.getElementById('configure_ha_pair').checked,
+    wan_ip: document.getElementById('wan_ip').value,
+    primary_wan_ip: document.getElementById('primary_wan_ip').value || document.getElementById('wan_ip').value,
+    secondary_wan_ip: document.getElementById('secondary_wan_ip').value || '192.168.223.132',
+    wan_netmask: document.getElementById('wan_netmask').value,
+    wan_gateway: document.getElementById('wan_gateway').value,
+    primary_nas_id: document.getElementById('primary_nas_id').value,
+    secondary_nas_id: document.getElementById('secondary_nas_id').value,
+    primary_wan_mac: document.getElementById('primary_wan_mac').value,
+    secondary_wan_mac: document.getElementById('secondary_wan_mac').value,
+    snmp_ro: document.getElementById('snmp_ro').value,
+    snmp_rw: document.getElementById('snmp_rw').value,
+    snmp_port: document.getElementById('snmp_port').value || '161'
+  };
+  const res = await fetch(`/apps/nomadix-config/api/export/${encodeURIComponent(id)}`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+  if(!res.ok){ alert('Export failed: ' + await res.text()); return; }
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const cd = res.headers.get('content-disposition') || '';
+  const match = cd.match(/filename="?([^";]+)"?/i);
+  a.href = url;
+  a.download = match ? match[1] : `nomadix_config_export_${id}.zip`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function pullBaselineSftp(){
+  const payload = {
+    host: document.getElementById('sftp_host').value,
+    port: document.getElementById('sftp_port').value || '22',
+    remote_dir: document.getElementById('sftp_remote_dir').value || '/flash',
+    username: document.getElementById('sftp_username').value,
+    password: document.getElementById('sftp_password').value
+  };
+  document.getElementById('sftpResult').innerHTML = '<div class="alert">Connecting by SFTP and pulling read-only baseline files...</div>';
+  const res = await fetch('/apps/nomadix-config/api/pull-baseline-sftp', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+  const data = await res.json();
+  const dl = data.backup?.download_url ? `<div class="button-row"><a href="${esc(data.backup.download_url)}"><button type="button" class="secondary">Download untouched backup ZIP</button></a></div>` : '';
+  const found = data.backup?.fetched_files ? `<p class="small"><b>Fetched:</b> ${esc(data.backup.fetched_files.join(', '))}</p>` : '';
+  document.getElementById('sftpResult').innerHTML = `<div class="alert ${data.ok?'success':''}">${data.ok?'Current config pulled successfully.':'SFTP pull completed with errors.'}<br>${esc((data.errors||[]).join('\n'))}</div>${found}${dl}<pre>${esc(JSON.stringify(data,null,2))}</pre>`;
+}
+
+async function analyzeBaseline(){
+  const f = document.getElementById('baselineZip').files[0];
+  if(!f){ document.getElementById('analyzeResult').innerHTML = '<div class="alert">Choose a ZIP first.</div>'; return; }
+  const fd = new FormData(); fd.append('baseline_zip', f);
+  const res = await fetch('/apps/nomadix-config/api/analyze-baseline', {method:'POST', body: fd});
+  const data = await res.json();
+  document.getElementById('analyzeResult').innerHTML = `<div class="alert ${data.ok?'success':''}">${data.ok?'Baseline structure looks usable.':'Baseline has errors.'}<br>${esc((data.errors||[]).join('\n'))}</div><pre>${esc(JSON.stringify(data,null,2))}</pre>`;
+}
+
+document.addEventListener('input', (ev) => {
+  if(ev.target && ev.target.id === 'wan_ip' && !document.getElementById('configure_ha_pair').checked){
+    document.getElementById('primary_wan_ip').value = ev.target.value;
+  }
+});
+toggleHaFields();
+init();
+</script>
+</body>
+</html>

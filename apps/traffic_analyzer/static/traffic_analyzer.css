@@ -1,0 +1,9 @@
+.traffic-page { max-width: 1280px; margin: 0 auto; padding: 24px; }
+.traffic-form { display: grid; gap: 14px; }
+.traffic-form textarea, .traffic-form input, .traffic-form select { width: 100%; padding: 10px 12px; border: 1px solid #d8dee8; border-radius: 10px; }
+.traffic-form .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.traffic-form button { width: fit-content; padding: 10px 16px; border-radius: 10px; border: 0; cursor: pointer; }
+.error { border-left: 4px solid #b42318; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; border-bottom: 1px solid #edf0f5; padding: 8px; vertical-align: top; }
+@media (max-width: 900px) { .traffic-form .grid { grid-template-columns: 1fr; } }

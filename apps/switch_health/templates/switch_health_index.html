@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Single Digits Engineering Platform - Switch Health</title>
+  <link rel="icon" href="https://images.squarespace-cdn.com/content/v1/63eaba56d2bc1c0edd1199e0/6c87c44f-feae-44b2-a096-fea952fde4bf/favicon.ico?format=100w">
+  <link rel="stylesheet" href="/static/css/sd-platform.css">
+  <link rel="stylesheet" href="/apps/switch-health/static/switch-health.css">
+  <link rel="stylesheet" href="/static/css/sd-module-unified.css">
+</head>
+<body>
+<div class="sd-shell">
+  <aside class="sd-sidebar"><div class="sd-brand"><img src="/static/img/logo.png" onerror="this.style.display='none'"><div><b>Single Digits</b><span>Engineering Platform</span></div></div><nav><a href="/">Shell Home</a><a class="active" href="/apps/switch-health">Switch Health</a></nav></aside>
+  <main class="sd-main">
+    <section class="sd-hero"><p class="eyebrow">Support Diagnostics</p><h1>Switch Health</h1><p>Run vendor-aware health checks for PoE, environmental state, logs, resources, LLDP, STP, VLANs, and link health.</p></section>
+    <form class="card grid" method="post" action="/apps/switch-health/scan">
+      <label class="span-2">Targets or subnets<textarea name="targets" rows="7" placeholder="10.10.10.2&#10;10.10.10.3:2222&#10;10.10.20.0/24" required></textarea></label>
+      <label>Username<input name="username" autocomplete="username" required></label>
+      <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+      <label>Default SSH Port<input name="port" type="number" value="22" min="1" max="65535"></label>
+      <label>Concurrency<input name="concurrency" type="number" value="10" min="1" max="25"><small>Default is 10. Maximum allowed is 25.</small></label>
+      <label>Timeout seconds<input name="timeout" type="number" value="20" min="5" max="90"></label>
+
+      <div class="span-2 option-row">
+        <label class="check"><input type="checkbox" name="show_tech" value="true"> Include show tech / full investigation</label>
+        <label class="check"><input type="checkbox" name="debug" value="true"> Debug logging</label>
+      </div>
+      <div class="span-2 warn-note">Show tech can take a long time and generate very large outputs.</div>
+
+      <label class="span-2">Cable diagnostic ports, optional<textarea name="cable_ports" rows="3" placeholder="Ruckus only for now: 1/1/1, 1/1/2"></textarea></label>
+
+      <fieldset class="span-2 command-card">
+        <legend>Command Sets</legend>
+        <p class="muted">Selected sets run vendor-specific commands for Ruckus ICX, Aruba CXOS, HP/Aruba ProCurve, Cisco IOS, Extreme EXOS/Switch Engine, TP-Link, and generic fallback devices.</p>
+        <div class="command-grid">
+          {% for cs in command_sets %}
+          <label class="check command-check"><input type="checkbox" name="command_sets" value="{{ cs.key }}" {% if cs.default %}checked{% endif %}> {{ cs.label }}</label>
+          {% endfor %}
+        </div>
+      </fieldset>
+
+      <div class="span-2"><button class="primary" type="submit">Run Health Scan</button></div>
+    </form>
+    <section class="card"><h2>Recent jobs</h2>{% if jobs %}<table><thead><tr><th>Job</th><th>Status</th><th>Targets</th><th>Created</th></tr></thead><tbody>{% for job in jobs[:15] %}<tr><td><a href="/apps/switch-health/job/{{ job.job_id }}">{{ job.job_id }}</a></td><td><span class="badge {{ job.status }}">{{ job.status }}</span></td><td>{{ job.targets|length }}</td><td>{{ job.created_at }}</td></tr>{% endfor %}</tbody></table>{% else %}<p>No Switch Health jobs yet.</p>{% endif %}</section>
+  </main>
+</div>
+</body>
+</html>

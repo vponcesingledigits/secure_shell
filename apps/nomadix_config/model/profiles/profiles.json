@@ -1,0 +1,190 @@
+{
+  "CLP-Marriott": {
+    "status": "preferred",
+    "aaa_family": "CLP",
+    "brand_variant": "Marriott",
+    "inherits": [
+      "common",
+      "clp_shared",
+      "marriott_dns",
+      "clp_expanded_acl"
+    ],
+    "requires_certificate_upload": true,
+    "radius_service_profile": "SD-RADSEC",
+    "radius_client": {
+      "routingMode": "2",
+      "dfltServerName": "SD-RADSEC",
+      "idleTimeout": "1200",
+      "loginRefresh": "3",
+      "reauthTimeout": "44640",
+      "nasIdOn": "true",
+      "nasId": "last_6_of_wan_mac_lowercase",
+      "nasIpOn": "true",
+      "nasPortTypeOn": "true",
+      "nasPortType": "19",
+      "framedIpOn": "true",
+      "termActionOn": "true",
+      "termActVolPc": "100",
+      "chargeForIdleOn": "true",
+      "radiusQosOn": "true"
+    },
+    "mac_auth": {
+      "enable": "true",
+      "radiusProfile": "SD-RADSEC",
+      "retryFreq": "60",
+      "retryLimit": "6",
+      "format": "1",
+      "hexCase": "1"
+    },
+    "dns": {
+      "dns_domain": "singledigits.com",
+      "dns_pri": "208.67.220.220",
+      "dns_sec": "208.67.222.222",
+      "dns_ter": "208.67.220.220"
+    },
+    "passthrough_profile": "CLP-Marriott",
+    "vlan_profile": "Marriott",
+    "dhcp_profile": "Marriott",
+    "baseline_notes": {
+      "source": "Working Marriott CLP HA full file pull",
+      "mac_auth_retry_limit": "6 observed in known-good full baseline",
+      "exclude_roomfile_port_850": true
+    }
+  },
+  "CLP-Hyatt": {
+    "status": "preferred",
+    "aaa_family": "CLP",
+    "brand_variant": "Hyatt",
+    "inherits": [
+      "common",
+      "clp_shared",
+      "hyatt_dns",
+      "clp_expanded_acl"
+    ],
+    "requires_certificate_upload": true,
+    "radius_service_profile": "SD-RADSEC",
+    "radius_client": {
+      "routingMode": "2",
+      "dfltServerName": "SD-RADSEC",
+      "idleTimeout": "1200",
+      "nasId": "last_6_of_wan_mac_lowercase"
+    },
+    "mac_auth": {
+      "enable": "true",
+      "radiusProfile": "SD-RADSEC",
+      "retryFreq": "60",
+      "retryLimit": "10",
+      "format": "1",
+      "hexCase": "1"
+    },
+    "dns": {
+      "dns_domain": "singledigits.com",
+      "dns_pri": "103.247.36.36",
+      "dns_sec": "103.247.37.37",
+      "dns_ter": "103.247.36.36"
+    },
+    "passthrough_profile": "CLP-Hyatt",
+    "vlan_profile": "Hyatt_TBD",
+    "dhcp_profile": "Hyatt_TBD"
+  },
+  "BAP-Marriott": {
+    "status": "legacy_migration_source",
+    "aaa_family": "BAP",
+    "brand_variant": "Marriott",
+    "inherits": [
+      "common",
+      "bap_shared",
+      "marriott_dns",
+      "clp_expanded_acl"
+    ],
+    "radius_service_profile": "SD-RADIUS",
+    "radius_client": {
+      "routingMode": "2",
+      "dfltServerName": "SD-RADIUS",
+      "idleTimeout": "3600",
+      "nasId": "last_6_of_wan_mac_lowercase"
+    },
+    "mac_auth": {
+      "enable": "true",
+      "radiusProfile": "SD-RADIUS",
+      "retryFreq": "60",
+      "retryLimit": "6",
+      "format": "1",
+      "hexCase": "1"
+    },
+    "dns": {
+      "dns_domain": "singledigits.com",
+      "dns_pri": "208.67.220.220",
+      "dns_sec": "208.67.222.222",
+      "dns_ter": "208.67.220.220"
+    },
+    "passthrough_profile": "BAP-Marriott",
+    "vlan_profile": "Marriott",
+    "dhcp_profile": "Marriott"
+  },
+  "Sonesta-11OS": {
+    "status": "active_baseline_for_11OS",
+    "aaa_family": "Sonesta",
+    "brand_variant": "11OS",
+    "inherits": [
+      "common",
+      "sonesta_11os_shared"
+    ],
+    "radius_service_profile": "ElevenOS",
+    "radius_client": {
+      "routingMode": "2",
+      "dfltServerName": "ElevenOS",
+      "authSrcPort": "1812",
+      "acctSrcPort": "1813",
+      "useLastAccept": "true",
+      "idleTimeout": "0",
+      "loginRefresh": "3",
+      "reauthCacheOn": "false",
+      "reauthTimeout": "44640",
+      "urlRedirectOn": "true",
+      "nasIdOn": "true",
+      "nasId": "last_6_of_wan_mac_lowercase",
+      "nasIpOn": "true",
+      "nasPortTypeOn": "false",
+      "framedIpOn": "true",
+      "termActionOn": "true",
+      "termActVolPc": "100",
+      "resetBytesOn": "true",
+      "chargeForIdleOn": "false",
+      "radiusQosOn": "false"
+    },
+    "mac_auth": {
+      "enable": "false",
+      "radiusProfile": "",
+      "retryFreq": "60",
+      "retryLimit": "6",
+      "format": "1",
+      "hexCase": "1"
+    },
+    "dns": {
+      "dns_domain": "singledigits.com",
+      "dns_pri": "8.8.8.8",
+      "dns_sec": "4.2.2.2",
+      "dns_ter": "4.2.2.1"
+    },
+    "passthrough_profile": "Sonesta-11OS",
+    "vlan_profile": "Sonesta-11OS",
+    "dhcp_profile": "Sonesta-11OS",
+    "baseline_notes": {
+      "source": "Screenshots and Sonesta/11OS collected standards pending full Sonesta file pull",
+      "mac_auth": "disabled",
+      "radius_profile": "ElevenOS",
+      "destination_http_redirection": "enabled for logoff.com -> http://secure.11os.com/ElevenOS/Portal/"
+    }
+  },
+  "Other": {
+    "status": "manual_custom",
+    "behavior": "baseline_plus_guided_edits",
+    "inherits": [
+      "common"
+    ],
+    "passthrough_profile": "user_edited",
+    "vlan_profile": "baseline_or_blank",
+    "dhcp_profile": "baseline_or_blank"
+  }
+}

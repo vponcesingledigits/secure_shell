@@ -1,0 +1,8 @@
+{
+  "name": "Evidence Pack",
+  "mount_path": "/apps/evidence",
+  "description": "Save Full Session into one portable, redacted offline ZIP evidence package.",
+  "requires": ["fastapi", "jinja2", "python-multipart", "reportlab", "openpyxl"],
+  "reads": ["Switch Health", "Topology", "Port Map", "Compliance", "History"],
+  "outputs": ["session_report.html", "executive_summary.pdf", "findings.json", "topology.json", "port_map.json", "raw_cli_output", "session.log", "excel_port_map_export.xlsx", "topology.pdf", "port_map.pdf"]
+}

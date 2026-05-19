@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section-heading">
+  <p class="eyebrow">Support Diagnostics</p>
+  <h1>ForeScout Verifier</h1>
+  <p class="lead">Validate and optionally remediate ForeScout-related switch compliance across Ruckus ICX, Aruba CXOS, HP/Aruba ProCurve, and Cisco IOS. This module runs inside the shell on port 8010 and uses the shared Single Digits UI.</p>
+</section>
+
+<div class="grid two">
+  <section class="panel">
+    <h2>Scan Targets</h2>
+    <form id="scanForm" class="builder-form">
+      <label>Targets / Subnets
+        <textarea name="targets" rows="7" placeholder="10.10.10.1&#10;10.10.10.2:2222&#10;10.10.20.0/24" required></textarea>
+      </label>
+      <div class="grid two">
+        <label>SSH Username
+          <input name="username" autocomplete="username" required>
+        </label>
+        <label>SSH Password
+          <input name="password" type="password" autocomplete="current-password" required>
+        </label>
+      </div>
+      <div class="grid two">
+        <label>Thread Count
+          <input name="threads" type="number" min="1" max="25" value="10">
+        </label>
+        <label>Retry Count
+          <input name="retry" type="number" min="0" max="3" value="1">
+        </label>
+      </div>
+      <label class="check"><input type="checkbox" name="remediate" value="1"> Optional remediation for safe missing items</label>
+      <div class="notice"><strong>Secrets:</strong> .env support is preserved. Passwords and SNMP strings are redacted from PDF export and UI command previews.</div>
+      <div class="actions">
+        <button class="button primary" type="submit">Start Scan</button>
+        <a class="button" href="/diagnostics">Back to Diagnostics</a>
+      </div>
+    </form>
+  </section>
+  <section class="panel">
+    <h2>Environment Settings</h2>
+    <p class="lead">Loaded from root <code>.env</code> or <code>apps/forescout/.env</code>.</p>
+    <div class="module-list">
+      <div class="module-row"><span>ForeScout username</span><strong>{{ 'Configured' if settings.forescout_username else 'Not set' }}</strong></div>
+      <div class="module-row"><span>ForeScout password</span><strong>{{ 'Configured' if settings.forescout_password else 'Not set' }}</strong></div>
+      <div class="module-row"><span>SNMP community</span><strong>{{ 'Configured' if settings.forescout_snmp else 'Not set' }}</strong></div>
+      <div class="module-row"><span>Trap hosts</span><strong>{{ settings.trap_hosts|length }}</strong></div>
+      <div class="module-row"><span>Tracebacks</span><strong>{{ 'Debug enabled' if settings.debug else 'Suppressed' }}</strong></div>
+    </div>
+    <div class="notice">Default SSH port is 22. IP:port targets are supported. Subnet scans are capped per submitted network for safety.</div>
+  </section>
+</div>
+
+<section class="panel output-panel">
+  <div class="card-top">
+    <h2>Progress</h2>
+    <a id="pdfLink" class="button" style="display:none" href="#">Export Redacted PDF</a>
+  </div>
+  <div id="progress" class="notice">No scan started.</div>
+  <div id="results" class="grid"></div>
+</section>
+
+<script>
+const form = document.getElementById('scanForm');
+const progress = document.getElementById('progress');
+const results = document.getElementById('results');
+const pdfLink = document.getElementById('pdfLink');
+let timer = null;
+
+function esc(s){return String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function findingList(findings){
+  if(!findings || !findings.length) return '<p>None</p>';
+  return '<ul>' + findings.map(f => `<li><strong>${esc(f.status)}</strong> · ${esc(f.check)} — ${esc(f.detail)}${f.remediation ? `<br><small>Remediation: ${esc(f.remediation)}</small>` : ''}</li>`).join('') + '</ul>';
+}
+function render(job){
+  progress.innerHTML = `<strong>${esc(job.status)}</strong> · ${job.completed}/${job.total} complete`;
+  pdfLink.style.display = job.results?.length ? 'inline-block' : 'none';
+  pdfLink.href = `/apps/forescout/job/${job.id}/pdf`;
+  const groups = job.groups || {};
+  results.innerHTML = ['Needs Remediation','Passed','Could Not Connect'].map(group => {
+    const rows = groups[group] || [];
+    return `<section class="panel"><h2>${group} <span class="status ${group === 'Passed' ? 'active' : group === 'Needs Remediation' ? 'legacy' : 'planned'}">${rows.length}</span></h2>` +
+      (rows.length ? rows.map(r => `<div class="module-row" style="display:block"><div class="card-top"><strong>${esc(r.hostname || r.target)}</strong><span>${esc(r.vendor)}</span></div><p>${esc(r.target)} ${r.error ? '· ' + esc(r.error) : ''}</p>${findingList(r.findings)}</div>`).join('') : '<p class="lead">None</p>') +
+      `</section>`;
+  }).join('');
+}
+async function poll(jobId){
+  const res = await fetch(`/apps/forescout/job/${jobId}`);
+  const job = await res.json();
+  render(job);
+  if(job.status === 'complete' || job.status === 'error') clearInterval(timer);
+}
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  progress.textContent = 'Starting scan...';
+  results.innerHTML = '';
+  pdfLink.style.display = 'none';
+  const res = await fetch('/apps/forescout/scan', {method:'POST', body:new FormData(form)});
+  const data = await res.json();
+  if(!res.ok){ progress.textContent = data.error || 'Scan failed to start.'; return; }
+  clearInterval(timer);
+  await poll(data.job_id);
+  timer = setInterval(() => poll(data.job_id), 1500);
+});
+</script>
+{% endblock %}

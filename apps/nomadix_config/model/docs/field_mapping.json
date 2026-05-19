@@ -1,0 +1,82 @@
+{
+  "current.txt": {
+    "aaa_options": [
+      "aaa_billPrintEnabled",
+      "aaa_passthru_port_on",
+      "aaa_passthru_port",
+      "aaa_dot1x_on",
+      "aaa_dot1x_reauthperiod",
+      "usg_os_encoding_on",
+      "aaa_relogin_on",
+      "portbased_billing_policies_on",
+      "aaa_paypal_on",
+      "nse_logout_ip0"
+    ],
+    "internal_web_server": [
+      "aaa_ssl_on",
+      "aaa_ssl_sens_only",
+      "aaa_ssl_host_name",
+      "usg_portal_xml_post_url",
+      "usg_portal_post_port",
+      "aaa_username_on",
+      "aaa_new_subscribers_on",
+      "usg_portal_supports_gis_on"
+    ],
+    "xml_servers": [
+      "xml_sender_ip",
+      "xml_sender2_ip",
+      "xml_sender3_ip",
+      "xml_sender4_ip"
+    ],
+    "dns": [
+      "dns_domain",
+      "dns_pri",
+      "dns_sec",
+      "dns_ter"
+    ],
+    "zone_migration": [
+      "nse_update_authfile_vlan_upon_migration"
+    ]
+  },
+  "netconf.txt": {
+    "wan_ipv4": [
+      "network_ip",
+      "netmask",
+      "gateway",
+      "gateway_arp_refresh_interval",
+      "nse_loc_network_ssid"
+    ]
+  },
+  "inatconf.txt": {
+    "port_roles": "inatCfgTbl records: portName, portRole, inat_on, pptp_on, ipsec_on"
+  },
+  "nseconf.txt": {
+    "portal": "portalPage records id=1 active internal page; id=2/id=3 kept blank",
+    "aaa": "aaa_record fields: enable, xmlEnable, authXmlViaAddress, authXmlViaCredentials, httpsRedirect, facebookLogin",
+    "radius_service_profiles": "radServProf",
+    "radius_client": "radClient",
+    "mac_auth": "macAuth",
+    "centralized_admin_auth": "centralizedAuthentication",
+    "passthrough": "hostPassthruTbl",
+    "access_control": "accCntrlGlobalConfig",
+    "acl": "accessControl_IP + _accessControl_IP_control",
+    "bandwidth": "bwManagementGlobalCfg",
+    "dhcp": "dhcpRelayCfgParams, dhcpServerCfgParams, dhcpServerPoolCfgTbl, _dhcpServerPoolCfgTbl_control",
+    "snmp": "snmpAgent",
+    "time": "timeZoneConfig, timeNtpConfig",
+    "wan_monitoring": "wanInterfaceMonitoringTbl",
+    "port_location_global": "portLocationGbl",
+    "destination_http_redirection": "destinationHTTPRedirection plus detailed table needs exact key confirmation",
+    "primary_wan_watchdog": "primWanWdgParams"
+  },
+  "unconfirmed_or_needs_diff": [
+    "detailed per-port/location/VLAN table section and keys",
+    "destination HTTP redirection detailed table section and keys",
+    "WAN uplink/downlink exact keys",
+    "WAN additional NAT IP list keys",
+    "WAN advanced IPv6 keys",
+    "SNMP DAT trap interval key",
+    "exact zone migration relogin and Acct-Terminate-Cause keys",
+    "text config checksum/trailer behavior"
+  ]
+}

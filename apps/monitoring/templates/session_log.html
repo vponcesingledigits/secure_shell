@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero"><p class="eyebrow">Monitoring Tool</p><h1>Session Log</h1><p class="lead">Recent in-memory monitoring actions for this shell runtime.</p></section>
+<section class="panel"><table><tr><th>When</th><th>Category</th><th>Message</th><th>Details</th></tr>{% for e in events %}<tr><td>{{ e.when }}</td><td>{{ e.category }}</td><td>{{ e.message }}</td><td>{{ e.details }}</td></tr>{% endfor %}</table></section>
+{% endblock %}

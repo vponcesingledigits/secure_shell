@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+{% if module %}
+<section class="panel wide">
+  <p class="eyebrow">{{ section }}</p>
+  <div class="card-top"><h1>{{ module.name }}</h1><span class="status {{ module.status }}">{{ module.status }}</span></div>
+  <p class="lead">{{ module.description }}</p>
+  <div class="notice">
+    <strong>Migration state:</strong>
+    {% if module.status in ["legacy", "shell"] %}
+      Legacy code is preserved and ready to be refactored into this route.
+    {% else %}
+      Placeholder route is ready for future implementation.
+    {% endif %}
+  </div>
+  {% if module.legacy_source %}<p><strong>Legacy source:</strong> <code>{{ module.legacy_source }}</code></p>{% endif %}
+  <p><a class="button" href="/{{ 'configuration' if module.section == 'configuration' else 'diagnostics' }}">Back to section</a></p>
+</section>
+{% else %}
+<section class="panel wide"><h1>Module not found</h1><p>The requested module is not registered.</p></section>
+{% endif %}
+{% endblock %}

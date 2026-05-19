@@ -1,0 +1,10 @@
+{
+  "id": "off_service",
+  "name": "Disconnect / Off-Service",
+  "version": "Alpha.0.8.0",
+  "mount": "/apps/off-service",
+  "category": "configuration",
+  "description": "Safely prepare a site or switch for off-service handoff using shared command profiles, .env-based secrets, dry-run preview, and credential handoff output.",
+  "router": "apps.off_service.routes",
+  "enabled": true
+}

@@ -1,0 +1,111 @@
+{
+  "common": {
+    "relayEnabled": "false",
+    "serverEnabled": "true",
+    "servSubnetBasedOn": "true",
+    "servIpUpsellOn": "false",
+    "servForwardedClientOn": "false"
+  },
+  "Sonesta-11OS": [
+    {
+      "poolId": "2",
+      "server_ip": "172.20.0.1",
+      "netmask": "255.255.240.0",
+      "pool_start_ip": "172.20.0.5",
+      "pool_stop_ip": "172.20.15.250",
+      "lease_minutes": "750",
+      "default_pool": "true"
+    },
+    {
+      "poolId": "3",
+      "server_ip": "172.20.16.1",
+      "netmask": "255.255.248.0",
+      "pool_start_ip": "172.20.16.10",
+      "pool_stop_ip": "172.20.23.250",
+      "lease_minutes": "750",
+      "default_pool": "false"
+    },
+    {
+      "poolId": "4",
+      "server_ip": "172.20.24.1",
+      "netmask": "255.255.248.0",
+      "pool_start_ip": "172.20.24.10",
+      "pool_stop_ip": "172.20.31.250",
+      "lease_minutes": "750",
+      "default_pool": "false"
+    },
+    {
+      "poolId": "5",
+      "server_ip": "172.20.32.1",
+      "netmask": "255.255.248.0",
+      "pool_start_ip": "172.20.32.10",
+      "pool_stop_ip": "172.20.39.250",
+      "lease_minutes": "750",
+      "default_pool": "false"
+    },
+    {
+      "poolId": "6",
+      "server_ip": "172.20.40.1",
+      "netmask": "255.255.248.0",
+      "pool_start_ip": "172.20.40.10",
+      "pool_stop_ip": "172.20.47.250",
+      "lease_minutes": "750",
+      "default_pool": "false"
+    },
+    {
+      "poolId": "7",
+      "server_ip": "172.20.56.1",
+      "netmask": "255.255.248.0",
+      "pool_start_ip": "172.20.56.10",
+      "pool_stop_ip": "172.20.63.250",
+      "lease_minutes": "750",
+      "default_pool": "false"
+    },
+    {
+      "poolId": "8",
+      "server_ip": "172.20.64.1",
+      "netmask": "255.255.248.0",
+      "pool_start_ip": "172.20.64.10",
+      "pool_stop_ip": "172.20.71.250",
+      "lease_minutes": "750",
+      "default_pool": "false"
+    },
+    {
+      "poolId": "9",
+      "server_ip": "172.20.72.1",
+      "netmask": "255.255.248.0",
+      "pool_start_ip": "172.20.72.10",
+      "pool_stop_ip": "172.20.79.250",
+      "lease_minutes": "750",
+      "default_pool": "false"
+    },
+    {
+      "poolId": "10",
+      "server_ip": "172.20.80.1",
+      "netmask": "255.255.248.0",
+      "pool_start_ip": "172.20.80.10",
+      "pool_stop_ip": "172.20.87.250",
+      "lease_minutes": "750",
+      "default_pool": "false"
+    },
+    {
+      "poolId": "11",
+      "server_ip": "172.20.88.1",
+      "netmask": "255.255.248.0",
+      "pool_start_ip": "172.20.88.10",
+      "pool_stop_ip": "172.20.95.250",
+      "lease_minutes": "750",
+      "default_pool": "false"
+    },
+    {
+      "poolId": "12",
+      "server_ip": "172.20.96.1",
+      "netmask": "255.255.248.0",
+      "pool_start_ip": "172.20.96.10",
+      "pool_stop_ip": "172.20.103.250",
+      "lease_minutes": "750",
+      "default_pool": "false"
+    }
+  ],
+  "Marriott": "captured from UI; exact pool rows need final normalization against VLAN table before generator"
+}

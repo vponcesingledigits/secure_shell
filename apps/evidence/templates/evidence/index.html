@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Evidence Pack | Single Digits Engineering Platform</title>
+  <link rel="icon" href="https://images.squarespace-cdn.com/content/v1/63eaba56d2bc1c0edd1199e0/6c87c44f-feae-44b2-a096-fea952fde4bf/favicon.ico?format=100w">
+  <style>
+    :root{--sd-blue:#14345f;--sd-cyan:#00a6d6;--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#65728a;--line:#e5edf7;}
+    *{box-sizing:border-box} body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .topbar{background:linear-gradient(135deg,var(--sd-blue),#0a213f);color:#fff;padding:24px 34px;display:flex;gap:18px;align-items:center;box-shadow:0 10px 30px rgba(20,52,95,.20)}
+    .logo{height:46px;width:auto;background:white;border-radius:10px;padding:6px;object-fit:contain}.title h1{margin:0;font-size:26px}.title p{margin:4px 0 0;color:#dce9f7}
+    main{padding:28px 34px 48px;max-width:1180px}.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:22px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 8px 24px rgba(20,52,95,.08)}
+    h2{margin:0 0 14px;color:var(--sd-blue)} label{font-weight:650;display:block;margin-bottom:8px}.help{color:var(--muted);font-size:14px;line-height:1.45} select,input{width:100%;padding:12px;border:1px solid #cfdbea;border-radius:12px;background:#fff;font-size:14px}
+    button{margin-top:16px;border:0;background:var(--sd-blue);color:white;padding:12px 18px;border-radius:12px;font-weight:700;cursor:pointer}button:hover{background:#0d284b}.pill{display:inline-block;background:#eaf2fb;color:var(--sd-blue);padding:5px 9px;border-radius:999px;margin:3px;font-size:12px}
+    table{width:100%;border-collapse:collapse}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:var(--sd-blue);background:#eaf2fb}.empty{padding:18px;background:#fff8e8;border:1px solid #f3d48a;border-radius:12px}
+    .footer-note{margin-top:18px;color:var(--muted);font-size:13px}.spinner{display:none;margin-left:10px}.busy .spinner{display:inline}.busy button{opacity:.7;pointer-events:none}
+    @media(max-width:850px){.grid{grid-template-columns:1fr}.topbar{align-items:flex-start}.logo{display:none}}
+  </style>
+  <link rel="stylesheet" href="/static/css/sd-platform.css">
+  <link rel="stylesheet" href="/static/css/sd-module-unified.css">
+</head>
+<body>
+<header class="topbar">
+  <img class="logo" src="/static/logo.png" alt="Single Digits" onerror="this.style.display='none'">
+  <div class="title"><h1>Evidence Pack</h1><p>Save Full Session into one portable offline ZIP.</p></div>
+</header>
+<main>
+  <div class="grid">
+    <section class="card">
+      <h2>Create Evidence Pack</h2>
+      <p class="help">Exports a self-contained ZIP with offline HTML, executive PDF, redacted findings/topology/port-map JSON, raw CLI by switch, session log, Excel port map, topology PDF, and port map PDF.</p>
+      {% if sessions %}
+      <form method="post" action="/apps/evidence/export" onsubmit="document.body.classList.add('busy')">
+        <label for="session_path">Session</label>
+        <select name="session_path" id="session_path">
+          {% for s in sessions %}
+          <option value="{{ s.path }}">{{ s.id }} — modified {{ s.modified }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit">Save Full Session ZIP <span class="spinner">Building…</span></button>
+      </form>
+      {% else %}
+      <div class="empty">No saved sessions were found under <strong>{{ history_root }}</strong>. Run Switch Health, Topology, Port Map, or Compliance first, then return here.</div>
+      {% endif %}
+      <div class="footer-note">Sensitive fields are redacted centrally before files are written. Existing binary exports from other apps are not trusted as the redaction source; this module regenerates the report files from redacted JSON wherever possible.</div>
+    </section>
+    <aside class="card">
+      <h2>Included Artifacts</h2>
+      <span class="pill">session_report.html</span><span class="pill">executive_summary.pdf</span><span class="pill">findings.json</span><span class="pill">topology.json</span><span class="pill">port_map.json</span><span class="pill">raw CLI output</span><span class="pill">session.log</span><span class="pill">excel_port_map_export.xlsx</span><span class="pill">topology.pdf</span><span class="pill">port_map.pdf</span><span class="pill">manifest.json</span>
+      <p class="help" style="margin-top:16px">Designed for leadership/vendor sharing without exposing passwords, SNMP communities, TACACS/RADIUS keys, API tokens, or other secrets.</p>
+    </aside>
+  </div>
+  <section class="card" style="margin-top:22px">
+    <h2>Available Sessions</h2>
+    {% if sessions %}
+    <table><thead><tr><th>Session</th><th>Modified</th><th>Path</th></tr></thead><tbody>
+      {% for s in sessions %}<tr><td>{{ s.id }}</td><td>{{ s.modified }}</td><td>{{ s.path }}</td></tr>{% endfor %}
+    </tbody></table>
+    {% else %}<p class="help">No sessions available.</p>{% endif %}
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,207 @@
+{
+  "Marriott": [
+    {
+      "port": "1000",
+      "location": "1000",
+      "description": "Guest Wireless",
+      "state": "Charge for Use",
+      "billing": "RAD",
+      "provide_dhcp": true,
+      "subnet": "172.20.0.0",
+      "intra_port": false
+    },
+    {
+      "port": "1016",
+      "location": "1016",
+      "description": "Lobby Wireless",
+      "state": "Charge for Use",
+      "billing": "RAD",
+      "provide_dhcp": true,
+      "subnet": "172.20.16.0",
+      "intra_port": false
+    },
+    {
+      "port": "1050",
+      "location": "1050",
+      "description": "Guest Wired",
+      "state": "Charge for Use",
+      "billing": "RAD",
+      "provide_dhcp": true,
+      "subnet": "172.20.50.0",
+      "intra_port": false
+    },
+    {
+      "port": "1029",
+      "location": "1029",
+      "description": "Conference Wired",
+      "state": "Charge for Use",
+      "billing": "RAD",
+      "provide_dhcp": true,
+      "subnet": "172.20.30.0",
+      "intra_port": false
+    },
+    {
+      "port": "1030",
+      "location": "1030",
+      "description": "SpecialEvent1030",
+      "state": "No Charge",
+      "billing": "",
+      "provide_dhcp": true,
+      "subnet": "172.21.0.0",
+      "intra_port": false
+    },
+    {
+      "port": "1032",
+      "location": "1032",
+      "description": "SpecialEvent1032",
+      "state": "No Charge",
+      "billing": "",
+      "provide_dhcp": true,
+      "subnet": "172.23.0.0",
+      "intra_port": false
+    },
+    {
+      "port": "1034",
+      "location": "1034",
+      "description": "SpecialEvent1034",
+      "state": "No Charge",
+      "billing": "",
+      "provide_dhcp": true,
+      "subnet": "172.20.35.0",
+      "intra_port": false
+    },
+    {
+      "port": "1033",
+      "location": "1033",
+      "description": "SpecialEvent1033",
+      "state": "No Charge",
+      "billing": "",
+      "provide_dhcp": true,
+      "subnet": "172.20.34.0",
+      "intra_port": false
+    },
+    {
+      "port": "1001",
+      "location": "1001",
+      "description": "Conference Wireless",
+      "state": "Charge for Use",
+      "billing": "RAD",
+      "provide_dhcp": true,
+      "subnet": "172.20.32.0",
+      "intra_port": false
+    }
+  ],
+  "Sonesta-11OS": [
+    {
+      "port": "1000",
+      "location": "1000-GuestWiFi",
+      "description": "Guest Wireless",
+      "state": "Charge",
+      "billing": "PMS,RAD",
+      "provide_dhcp": true,
+      "subnet": "172.20.0.0",
+      "intra_port": true
+    },
+    {
+      "port": "1025",
+      "location": "1025-ConfWiFi",
+      "description": "Conference WiFi",
+      "state": "Charge",
+      "billing": "PMS,RAD",
+      "provide_dhcp": true,
+      "subnet": "172.20.32.0",
+      "intra_port": false
+    },
+    {
+      "port": "1026",
+      "location": "1026-ConfWired",
+      "description": "Conference Wired",
+      "state": "No Charge",
+      "billing": "PMS,RAD",
+      "provide_dhcp": true,
+      "subnet": "172.20.40.0",
+      "intra_port": false
+    },
+    {
+      "port": "1031",
+      "location": "1031-SP1",
+      "description": "SPEvent1",
+      "state": "Charge",
+      "billing": "PMS,RAD",
+      "provide_dhcp": true,
+      "subnet": "172.20.56.0",
+      "intra_port": false
+    },
+    {
+      "port": "1032",
+      "location": "1032-SPE2",
+      "description": "SPEvent2",
+      "state": "No Charge",
+      "billing": "PMS,RAD",
+      "provide_dhcp": true,
+      "subnet": "172.20.64.0",
+      "intra_port": false
+    },
+    {
+      "port": "1033",
+      "location": "1033-SPE3",
+      "description": "SPEvent3",
+      "state": "No Charge",
+      "billing": "PMS,RAD",
+      "provide_dhcp": true,
+      "subnet": "172.20.72.0",
+      "intra_port": false
+    },
+    {
+      "port": "1034",
+      "location": "1034-SPE4",
+      "description": "SPEvent4",
+      "state": "No Charge",
+      "billing": "PMS,RAD",
+      "provide_dhcp": true,
+      "subnet": "172.20.80.0",
+      "intra_port": false
+    },
+    {
+      "port": "1050",
+      "location": "1050-GuestWired",
+      "description": "Guest Wired",
+      "state": "Charge",
+      "billing": "PMS,RAD",
+      "provide_dhcp": true,
+      "subnet": "172.20.96.0",
+      "intra_port": false
+    },
+    {
+      "port": "1060",
+      "location": "1060-Public",
+      "description": "Public/Lobby WiFi",
+      "state": "Charge",
+      "billing": "PMS,RAD",
+      "provide_dhcp": true,
+      "subnet": "172.20.16.0",
+      "intra_port": false
+    },
+    {
+      "port": "1002",
+      "location": "1002",
+      "description": "Test Guest",
+      "state": "Charge",
+      "billing": "PMS,RAD",
+      "provide_dhcp": true,
+      "subnet": "172.20.0.0",
+      "intra_port": false
+    }
+  ],
+  "common_per_vlan_rules": {
+    "default_group_bandwidth_policy": false,
+    "max_up_bandwidth_kbps": "",
+    "max_down_bandwidth_kbps": "",
+    "default_qos_policy": "(no policy)",
+    "default_cbq_class": "(none)",
+    "billing_plans": "All plans",
+    "facebook_login": false,
+    "paypal_billing": false,
+    "up_down_link_speed_limits": "disabled"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "switch-configurator",
+  "name": "Switch Configurator",
+  "version": "0.7.5",
+  "mount": "/apps/switch-configurator",
+  "category": "configuration",
+  "description": "Generate vendor-aware switch configurations from shell-wide site context, shared command catalogs, VLAN defaults, port profiles, and legacy script references.",
+  "router": "apps.switch_configurator.routes",
+  "enabled": true
+}

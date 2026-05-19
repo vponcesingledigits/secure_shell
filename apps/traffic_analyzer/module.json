@@ -1,0 +1,10 @@
+{
+  "id": "traffic_analyzer",
+  "name": "Traffic Analyzer",
+  "version": "0.8.0",
+  "mount": "/apps/traffic-analyzer",
+  "category": "support",
+  "description": "Vendor-aware traffic investigation using the shared MAC/IP trace engine with deeper counters, errors, STP, trunk, storm, and neighbor analysis.",
+  "router": "apps.traffic_analyzer.routes",
+  "enabled": true
+}

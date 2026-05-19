@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Single Digits Switch Health</title>
+  <link rel="icon" href="https://images.squarespace-cdn.com/content/v1/63eaba56d2bc1c0edd1199e0/6c87c44f-feae-44b2-a096-fea952fde4bf/favicon.ico?format=100w">
+  <link rel="stylesheet" href="/apps/switch-health/static/switch_health.css">
+  <link rel="stylesheet" href="/static/css/sd-platform.css">
+  <link rel="stylesheet" href="/static/css/sd-module-unified.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><img src="/static/logo.png" onerror="this.style.display='none'" alt="Single Digits"><div><strong>Single Digits Engineering Platform</strong><span>Switch Health</span></div></div>
+    <a href="/" class="home">Launcher</a>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h1>Switch Health Scan</h1>
+      <p>Run vendor-aware health checks for PoE, environmental state, logs, resources, and link health.</p>
+      <form id="scanForm">
+        <label>Targets / Subnets<textarea name="targets" placeholder="10.10.10.1&#10;10.10.20.0/28&#10;198.51.100.10:2222" required></textarea></label>
+        <div class="grid">
+          <label>Username<input name="username" autocomplete="username" required></label>
+          <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+          <label>Concurrency<input name="concurrency" type="number" min="1" max="25" value="10"></label>
+          <label>Timeout<input name="timeout" type="number" min="5" max="120" value="20"></label>
+        </div>
+        <div class="checks">
+          <label><input type="checkbox" name="cable_diagnostics"> Ruckus cable diagnostics</label>
+          <label><input type="checkbox" name="show_tech"> Include show tech</label>
+          <label><input type="checkbox" name="debug"> Debug logging</label>
+        </div>
+        <label>Cable diagnostic ports, optional<input name="cable_ports" placeholder="1/1/1, 1/1/2"></label>
+        <button type="submit">Run Health Scan</button>
+      </form>
+    </section>
+
+    <section id="status" class="status hidden">Scanning...</section>
+    <section id="summary" class="summary hidden"></section>
+    <section id="results" class="results"></section>
+  </main>
+
+<script src="/apps/switch-health/static/switch_health.js"></script>
+</body>
+</html>

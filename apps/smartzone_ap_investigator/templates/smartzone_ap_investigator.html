@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SmartZone AP Investigator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="https://images.squarespace-cdn.com/content/v1/63eaba56d2bc1c0edd1199e0/6c87c44f-feae-44b2-a096-fea952fde4bf/favicon.ico?format=100w">
+  <link rel="stylesheet" href="/apps/smartzone-ap-investigator/static/smartzone_ap_investigator.css">
+  <link rel="stylesheet" href="/static/css/sd-platform.css">
+  <link rel="stylesheet" href="/static/css/sd-module-unified.css">
+</head>
+<body>
+  <header class="shell-header">
+    <div class="brand">
+      <img src="/static/logo.png" onerror="this.style.display='none'" alt="Single Digits">
+      <div>
+        <h1>SmartZone AP Investigator</h1>
+        <p>Import an AP/client from MAC Trace and investigate it through the Ruckus SmartZone API.</p>
+      </div>
+    </div>
+    <a class="home" href="/">Shell Home</a>
+  </header>
+
+  <main class="layout">
+    <section class="card">
+      <h2>1. Controller</h2>
+      <label>SmartZone URL <input id="controller_url" placeholder="https://smartzone.example.com"></label>
+      <div class="grid2">
+        <label>Username <input id="username" autocomplete="username"></label>
+        <label>Password <input id="password" type="password" autocomplete="current-password"></label>
+      </div>
+      <div class="grid3">
+        <label>SmartZone Version/Profile
+          <select id="profile_id" onchange="profileChanged()">
+            {% for p in api_profiles %}
+              <option value="{{ p.id }}" data-api="{{ p.recommended_api_version }}">{{ p.label }} — {{ p.recommended_api_version }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>API Version <input id="api_version" value="v11_1"></label>
+        <label>Domain ID <input id="domain_id" placeholder="optional"></label>
+        <label>Zone ID <input id="zone_id" placeholder="optional"></label>
+      </div>
+      <label class="check"><input id="verify_ssl" type="checkbox"> Verify SSL certificate</label>
+    </section>
+
+    <section class="card">
+      <h2>2. MAC Trace Import</h2>
+      <p class="muted">Upload the JSON/CSV export from MAC Trace, or manually enter the AP/client details below.</p>
+      <input id="trace_file" type="file" accept=".json,.csv,.txt">
+      <button onclick="parseTrace()">Parse MAC Trace Export</button>
+      <div id="parsed_records" class="records"></div>
+    </section>
+
+    <section class="card">
+      <h2>3. Investigation Target</h2>
+      <div class="grid2">
+        <label>AP Name <input id="ap_name"></label>
+        <label>AP IP <input id="ap_ip"></label>
+        <label>AP MAC <input id="ap_mac" placeholder="aa:bb:cc:dd:ee:ff"></label>
+        <label>Client MAC <input id="client_mac" placeholder="optional"></label>
+      </div>
+      <label class="check"><input id="download_support_log" type="checkbox"> Download AP support log when AP MAC is known</label>
+      <button class="primary" onclick="investigate()">Investigate AP</button>
+      <a id="download" class="download hidden" href="/apps/smartzone-ap-investigator/download/latest">Download Evidence ZIP</a>
+    </section>
+
+    <section class="card wide">
+      <h2>Results</h2>
+      <div id="status" class="status">No investigation has run yet.</div>
+      <div id="findings" class="findings"></div>
+      <details open>
+        <summary>Raw SmartZone API Results</summary>
+        <pre id="raw"></pre>
+      </details>
+    </section>
+  </main>
+
+<script>
+
+function profileChanged(){
+  const sel = document.getElementById('profile_id');
+  const opt = sel.options[sel.selectedIndex];
+  const api = opt ? opt.getAttribute('data-api') : '';
+  if(api){ document.getElementById('api_version').value = api; }
+}
+document.addEventListener('DOMContentLoaded', profileChanged);
+
+function val(id){ return document.getElementById(id).value.trim(); }
+function checked(id){ return document.getElementById(id).checked; }
+
+async function parseTrace(){
+  const f = document.getElementById('trace_file').files[0];
+  if(!f){ alert('Choose a MAC Trace export first.'); return; }
+  const fd = new FormData();
+  fd.append('file', f);
+  const res = await fetch('/apps/smartzone-ap-investigator/parse-mac-trace', {method:'POST', body:fd});
+  const data = await res.json();
+  const box = document.getElementById('parsed_records');
+  box.innerHTML = '';
+  (data.records || []).forEach((r, idx) => {
+    const div = document.createElement('div');
+    div.className = 'record';
+    div.innerHTML = `<b>${r.ap_name || r.ap_mac || 'AP candidate ' + (idx+1)}</b>
+      <span>${r.ap_ip || ''}</span>
+      <span>${r.ap_mac || ''}</span>
+      <span>${r.client_mac || ''}</span>
+      <button>Select</button>`;
+    div.querySelector('button').onclick = () => {
+      ['ap_name','ap_ip','ap_mac','client_mac'].forEach(k => document.getElementById(k).value = r[k] || '');
+    };
+    box.appendChild(div);
+  });
+  if(!data.records || !data.records.length){ box.innerHTML = '<p class="warn">No AP/client records were detected.</p>'; }
+}
+
+async function investigate(){
+  document.getElementById('status').textContent = 'Running SmartZone investigation...';
+  document.getElementById('findings').innerHTML = '';
+  document.getElementById('raw').textContent = '';
+  document.getElementById('download').classList.add('hidden');
+
+  const fd = new FormData();
+  ['controller_url','username','password','api_version','domain_id','zone_id','ap_mac','ap_name','ap_ip','client_mac'].forEach(id => fd.append(id, val(id)));
+  fd.append('verify_ssl', checked('verify_ssl') ? 'true' : 'false');
+  fd.append('download_support_log', checked('download_support_log') ? 'true' : 'false');
+
+  const res = await fetch('/apps/smartzone-ap-investigator/investigate', {method:'POST', body:fd});
+  const data = await res.json();
+  document.getElementById('raw').textContent = JSON.stringify(data, null, 2);
+
+  if(!res.ok || !data.ok){
+    document.getElementById('status').textContent = data.error || 'Investigation failed.';
+    return;
+  }
+
+  document.getElementById('status').textContent = 'Investigation complete.';
+  const findings = document.getElementById('findings');
+  (data.findings || []).forEach(f => {
+    const div = document.createElement('div');
+    div.className = 'finding ' + (f.severity || 'info');
+    div.innerHTML = `<b>${(f.severity || 'info').toUpperCase()} — ${f.title}</b><p>${f.detail || ''}</p>`;
+    findings.appendChild(div);
+  });
+  document.getElementById('download').classList.remove('hidden');
+}
+</script>
+</body>
+</html>

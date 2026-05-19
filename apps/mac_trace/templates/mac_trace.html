@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Single Digits MAC Trace</title>
+  <link rel="icon" href="https://images.squarespace-cdn.com/content/v1/63eaba56d2bc1c0edd1199e0/6c87c44f-feae-44b2-a096-fea952fde4bf/favicon.ico?format=100w">
+  <link rel="stylesheet" href="/apps/mac-trace/static/mac_trace.css">
+  <link rel="stylesheet" href="/static/css/sd-platform.css">
+  <link rel="stylesheet" href="/static/css/sd-module-unified.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><img src="/static/logo.png" onerror="this.style.display='none'" alt="Single Digits"><div><strong>Single Digits</strong><span>MAC Origin Trace Utility</span></div></div>
+  <nav><a href="/">Home</a><a href="/apps/mac-trace/export/json">Export JSON</a></nav>
+</header>
+<main>
+  <section class="panel hero">
+    <div>
+      <h1>MAC Origin Trace</h1>
+      <p>Recursively follows the learned MAC port through LLDP-connected switches until it finds an AP, an unmanaged/non-LLDP bridge, or a true endpoint.</p>
+    </div>
+  </section>
+  <section class="panel">
+    <form id="traceForm">
+      <div class="grid two">
+        <label>Starting switch IP / hostname<input name="start_switch" placeholder="10.23.172.131" required></label>
+        <label>MAC address<input name="mac" placeholder="8c:b8:7e:57:6f:ac" required></label>
+      </div>
+      <div class="grid four">
+        <label>Username<input name="username" autocomplete="username" required></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+        <label>Max hops<input name="max_hops" type="number" min="1" max="20" value="8"></label>
+        <label>Timeout<input name="timeout" type="number" min="5" max="90" value="20"></label>
+      </div>
+      <label class="check"><input name="debug" type="checkbox" value="true"> Include raw/debug output in JSON</label>
+      <button type="submit">Trace MAC</button>
+    </form>
+  </section>
+  <section id="status" class="status hidden"></section>
+  <section id="result"></section>
+</main>
+<script src="/apps/mac-trace/static/mac_trace.js"></script>
+</body>
+</html>

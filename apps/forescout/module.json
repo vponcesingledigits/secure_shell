@@ -1,0 +1,10 @@
+{
+  "id": "forescout",
+  "name": "ForeScout Verifier",
+  "version": "Alpha 0.6 consolidated",
+  "mount": "/apps/forescout",
+  "category": "Support Diagnostics",
+  "description": "Validate and optionally remediate ForeScout-related switch configuration compliance.",
+  "router": "apps.forescout.routes",
+  "enabled": true
+}

@@ -1,0 +1,10 @@
+{
+  "id": "monitoring",
+  "name": "Monitoring Tool",
+  "version": "Alpha 0.7.5",
+  "mount": "/apps/monitoring",
+  "category": "Support Diagnostics",
+  "description": "Live monitoring workflows, down-device troubleshooting, saved session evidence, and reusable SSH/parser evidence collection.",
+  "router": "apps.monitoring.routes",
+  "enabled": true
+}

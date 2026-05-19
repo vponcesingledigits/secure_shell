@@ -1,0 +1,10 @@
+{
+  "id": "port-map",
+  "name": "Port Map",
+  "version": "Alpha 0.6 consolidated",
+  "mount": "/apps/port-map",
+  "category": "Support Diagnostics",
+  "description": "Multi-vendor port inventory, LLDP, MAC/VLAN visibility, and rename preview.",
+  "router": "apps.port_map.routes",
+  "enabled": true
+}

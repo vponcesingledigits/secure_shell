@@ -1,0 +1,77 @@
+{
+  "internal_web_server": {
+    "ssl_support": false,
+    "encrypt_only_sensitive_data": false,
+    "certificate_dns_name": "ssl.certificate.com",
+    "portal_page_url": "http://secure.11os.com/ElevenOS/Portal/",
+    "parameter_passing": true,
+    "parameter_signing_method": "none",
+    "signed_parameters": {
+      "UI": false,
+      "MA": false,
+      "RN": false,
+      "PORT": false,
+      "SIP": false,
+      "QINQ": false
+    },
+    "supports_gis_clients": true,
+    "portal_xml_post_url": "http://secure.11os.com/ElevenOS/Portal/Nomadix_Post.aspx",
+    "portal_xml_post_port": "80",
+    "usernames": true,
+    "new_subscribers": true,
+    "smart_client_support": false
+  },
+  "xml_options": {
+    "logout_ip": "5.0.0.5",
+    "auth_via_xml_user_credentials": true,
+    "auth_via_ip_address": true,
+    "xml_servers": [
+      "52.39.117.1",
+      "185.144.240.0",
+      "::",
+      "::"
+    ],
+    "https_redirection": false
+  },
+  "radius_service_profile": {
+    "profName": "ElevenOS",
+    "authProtocol": "0",
+    "authOn": "true",
+    "authPrimUri": "52.41.63.155",
+    "authPrimPort": "1812",
+    "authPrimRadSecPort": "0",
+    "authAltUri": "52.41.63.155",
+    "authAltPort": "1812",
+    "authAltRadSecPort": "0",
+    "acctOn": "true",
+    "acctPrimUri": "52.41.63.155",
+    "acctPrimPort": "1813",
+    "acctPrimRadSecPort": "0",
+    "acctAltUri": "52.41.63.155",
+    "acctAltPort": "1813",
+    "acctAltRadSecPort": "0",
+    "retryMethod": "0",
+    "retryDelay": "10",
+    "retryAttempts": "1",
+    "radSecOn": "false",
+    "secret_ref": "ELEVENOS_RADIUS_SECRET"
+  },
+  "destination_http_redirection": {
+    "enabled": true,
+    "records": [
+      {
+        "matchingString": "logoff.com",
+        "url": "http://secure.11os.com/ElevenOS/Portal/",
+        "parameterPassing": "true",
+        "method": "0",
+        "signUI": "1",
+        "signMA": "1",
+        "signRN": "1",
+        "signPORT": "1",
+        "signSIP": "1",
+        "signQINQ": "0",
+        "osPassing": "false"
+      }
+    ]
+  }
+}
