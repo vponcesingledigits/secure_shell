@@ -15,8 +15,10 @@ PORT_PATTERNS = {
 PORT_TOKEN = r"(?:\d+/\d+/\d+|(?:Gi|Te|Fa|Eth|Po)\S+|[A-Z]?\d+|\d+/[A-Z]?\d+)"
 
 
-def normalize_vendor(vendor: str) -> str:
-    v = (vendor or "").lower()
+def normalize_vendor(vendor: Any) -> str:
+    if hasattr(vendor, "vendor"):
+        vendor = vendor.vendor
+    v = (str(vendor) if vendor else "").lower()
     if "ruckus" in v or "icx" in v or "brocade" in v:
         return "ruckus"
     if "cx" in v or "aos-cx" in v or "aruba cx" in v:
