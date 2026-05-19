@@ -24,8 +24,10 @@ def mac_formats(mac: str) -> dict[str, str]:
 
 def validate_port_token(port: str) -> str:
     p = str(port or "").strip()
-    if not p or not PORT_TOKEN_RE.fullmatch(p):
-        raise ValueError("Invalid interface/port value.")
+    if not p:
+        return ""
+    if not PORT_TOKEN_RE.fullmatch(p):
+        raise ValueError(f"Invalid interface/port value: '{p}'")
     return p
 
 def sanitize_cli_label(value: str, max_len: int = 64) -> str:
